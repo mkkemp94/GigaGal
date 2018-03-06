@@ -1,5 +1,8 @@
 package com.udacity.gamedev.gigagal;
 
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.udacity.gamedev.gigagal.entities.GigaGal;
+
 /**
  * Created by mkemp on 3/6/18.
  * Holds on to the entities that make up a level.
@@ -9,15 +12,17 @@ public class Level {
 
     public static final String TAG = Level.class.getName();
 
-    public Level() {
+    private GigaGal gigaGal;
 
+    public Level() {
+        gigaGal = new GigaGal();
     }
 
     public void update(float delta) {
-        // TODO : Call update on all entities in the level.
+        gigaGal.update(delta);
     }
 
-    public void render(float delta) {
-        // TODO : Call render on all entities in the level, from bg to fg
+    public void render(SpriteBatch batch) {
+        gigaGal.render(batch);
     }
 }

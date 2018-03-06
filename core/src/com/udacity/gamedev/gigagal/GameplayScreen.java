@@ -5,7 +5,6 @@ import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.udacity.gamedev.gigagal.utilities.Assets;
 import com.udacity.gamedev.gigagal.utilities.Constants;
@@ -20,12 +19,16 @@ public class GameplayScreen extends ScreenAdapter {
 
     public static final String TAG = GameplayScreen.class.getName();
 
+    private Level level;
+
     private SpriteBatch spriteBatch;
     private ExtendViewport viewport;
 
     @Override
     public void show() {
         Assets.instance.init();
+
+        level = new Level();
 
         spriteBatch = new SpriteBatch();
         viewport = new ExtendViewport(Constants.WORLD_SIZE, Constants.WORLD_SIZE);
@@ -44,8 +47,7 @@ public class GameplayScreen extends ScreenAdapter {
 
     @Override
     public void render(float delta) {
-
-        // TODO : Call update on the current level
+        level.update(delta);
 
         viewport.apply();
 
@@ -55,29 +57,7 @@ public class GameplayScreen extends ScreenAdapter {
 
         spriteBatch.setProjectionMatrix(viewport.getCamera().combined);
         spriteBatch.begin();
-
-        // Get the standing right atlas region
-        TextureAtlas.AtlasRegion region = Assets.instance.gigaGalAssets.standingRight;
-        spriteBatch.draw(region.getTexture(),
-                50,
-                50,
-                0,
-                0,
-                region.getRegionWidth(),
-                region.getRegionHeight(),
-                1,
-                1,
-                0,
-                region.getRegionX(),
-                region.getRegionY(),
-                region.getRegionWidth(),
-                region.getRegionHeight(),
-                false,
-                false
-        );
-
-        // TODO : Call render on the current level
-
+        level.render(spriteBatch);
         spriteBatch.end();
     }
 }

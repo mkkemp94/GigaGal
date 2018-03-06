@@ -1,6 +1,7 @@
 package com.udacity.gamedev.gigagal.utilities;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.math.Vector2;
 
 /**
  * Created by mkemp on 3/6/18.
@@ -20,6 +21,8 @@ public class Constants {
     public static final float WORLD_SIZE = 128;
 
     public static final String TEXTURE_ATLAS = "images/gigagal.pack.atlas";
-
     public static final String SPRITE_NAME_STANDING_RIGHT = "standing-right";
+
+    public static final Vector2 GIGAGAL_EYE_POSITION = new Vector2(16, 24);
+    public static final float GIGAGAL_EYE_HEIGHT = 16f;
 }
