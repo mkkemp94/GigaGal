@@ -21,10 +21,12 @@ public class GigaGal {
 
     private Vector2 position;
     private Facing facing;
+    private JumpState jumpState;
 
     public GigaGal() {
         position = new Vector2(20, Constants.GIGAGAL_EYE_HEIGHT);
         facing = Facing.RIGHT;
+        jumpState = JumpState.GROUNDED;
     }
 
     public void update(float delta) {
@@ -34,6 +36,27 @@ public class GigaGal {
 
         if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
             moveRight(delta);
+        }
+
+        if (Gdx.input.isKeyPressed(Input.Keys.SPACE)) {
+            jump(delta);
+        }
+
+        if (jumpState == JumpState.JUMPING) {
+            position.y += delta * Constants.GIGAGAL_JUMP_HEIGHT;
+
+            if (position.y >= Constants.GIGAGAL_JUMP_HEIGHT) {
+                jumpState = JumpState.FALLING;
+            }
+        }
+
+        if (jumpState == JumpState.FALLING) {
+            position.y -= delta * Constants.GRAVITATIONAL_ACCELERATION;
+
+            if (position.y <= Constants.GIGAGAL_EYE_HEIGHT) {
+                position.y = Constants.GIGAGAL_EYE_HEIGHT;
+                jumpState = JumpState.GROUNDED;
+            }
         }
     }
 
@@ -45,6 +68,12 @@ public class GigaGal {
     private void moveRight(float delta) {
         facing = Facing.RIGHT;
         position.x += delta * Constants.GIGAGAL_MOVEMENT_SPEED;
+    }
+
+    private void jump(float delta) {
+        if (jumpState == JumpState.GROUNDED) {
+            jumpState = JumpState.JUMPING;
+        }
     }
 
     public void render(SpriteBatch batch) {
@@ -75,6 +104,10 @@ public class GigaGal {
     }
 
     public enum Facing {
-        RIGHT, LEFT;
+        RIGHT, LEFT
+    }
+
+    public enum JumpState {
+        JUMPING, FALLING, GROUNDED
     }
 }
