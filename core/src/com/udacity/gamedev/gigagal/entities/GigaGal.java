@@ -113,8 +113,31 @@ public class GigaGal {
 
         // Get the standing right atlas region
         TextureAtlas.AtlasRegion region = Assets.instance.gigaGalAssets.standingRight;
-        if (facing == Facing.LEFT) {
-            region = Assets.instance.gigaGalAssets.standingLeft;
+
+        switch (facing) {
+            case RIGHT:
+                switch (jumpState) {
+                    case GROUNDED:
+                        region = Assets.instance.gigaGalAssets.standingRight;
+                        break;
+                    case FALLING:
+                    case JUMPING:
+                        region = Assets.instance.gigaGalAssets.jumpingRight;
+                        break;
+                }
+                break;
+
+            case LEFT:
+                switch (jumpState) {
+                    case GROUNDED:
+                        region = Assets.instance.gigaGalAssets.standingLeft;
+                        break;
+                    case FALLING:
+                    case JUMPING:
+                        region = Assets.instance.gigaGalAssets.jumpingLeft;
+                        break;
+                }
+                break;
         }
 
         batch.draw(region.getTexture(),
