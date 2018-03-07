@@ -5,6 +5,7 @@ import com.badlogic.gdx.assets.AssetDescriptor;
 import com.badlogic.gdx.assets.AssetErrorListener;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
 import com.badlogic.gdx.utils.Disposable;
 
 /**
@@ -52,10 +53,12 @@ public class Assets implements Disposable, AssetErrorListener {
 
     public class GigaGalAssets {
 
-        public final TextureAtlas.AtlasRegion standingRight;
+        public final AtlasRegion standingRight;
+        public final AtlasRegion standingLeft;
 
         private GigaGalAssets(TextureAtlas atlas) {
             standingRight = atlas.findRegion(Constants.SPRITE_NAME_STANDING_RIGHT);
+            standingLeft = atlas.findRegion(Constants.SPRITE_NAME_STANDING_LEFT);
         }
     }
 }

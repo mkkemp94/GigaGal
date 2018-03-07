@@ -20,9 +20,11 @@ public class GigaGal {
     public static final String TAG = GigaGal.class.getName();
 
     private Vector2 position;
+    private Facing facing;
 
     public GigaGal() {
         position = new Vector2(20, Constants.GIGAGAL_EYE_HEIGHT);
+        facing = Facing.RIGHT;
     }
 
     public void update(float delta) {
@@ -36,16 +38,23 @@ public class GigaGal {
     }
 
     private void moveLeft(float delta) {
+        facing = Facing.LEFT;
         position.x -= delta * Constants.GIGAGAL_MOVEMENT_SPEED;
     }
 
     private void moveRight(float delta) {
+        facing = Facing.RIGHT;
         position.x += delta * Constants.GIGAGAL_MOVEMENT_SPEED;
     }
 
     public void render(SpriteBatch batch) {
+
         // Get the standing right atlas region
         TextureAtlas.AtlasRegion region = Assets.instance.gigaGalAssets.standingRight;
+        if (facing == Facing.LEFT) {
+            region = Assets.instance.gigaGalAssets.standingLeft;
+        }
+
         batch.draw(region.getTexture(),
                 position.x - Constants.GIGAGAL_EYE_POSITION.x,
                 position.y - Constants.GIGAGAL_EYE_POSITION.y,
@@ -63,5 +72,9 @@ public class GigaGal {
                 false,
                 false
         );
+    }
+
+    public enum Facing {
+        RIGHT, LEFT;
     }
 }
