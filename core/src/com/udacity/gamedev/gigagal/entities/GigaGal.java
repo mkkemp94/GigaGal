@@ -22,18 +22,21 @@ public class GigaGal {
     public static final String TAG = GigaGal.class.getName();
 
     private Vector2 position;
-    private Facing facing;
-
     private Vector2 velocity;
+
+    private Facing facing;
     private JumpState jumpState;
+    private WalkState walkState;
+
     private long jumpStartTime;
 
     public GigaGal() {
         position = new Vector2(20, Constants.GIGAGAL_EYE_HEIGHT);
-        facing = Facing.RIGHT;
-
         velocity = new Vector2(0, 0);
+
+        facing = Facing.RIGHT;
         jumpState = JumpState.FALLING;
+        walkState = WalkState.STANDING;
     }
 
     public void update(float delta) {
@@ -68,19 +71,21 @@ public class GigaGal {
 
         if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
             moveLeft(delta);
-        }
-
-        if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
+        } else if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
             moveRight(delta);
+        } else {
+            walkState = WalkState.STANDING;
         }
     }
 
     private void moveLeft(float delta) {
+        walkState = WalkState.WALKING;
         facing = Facing.LEFT;
         position.x -= delta * Constants.GIGAGAL_MOVEMENT_SPEED;
     }
 
     private void moveRight(float delta) {
+        walkState = WalkState.WALKING;
         facing = Facing.RIGHT;
         position.x += delta * Constants.GIGAGAL_MOVEMENT_SPEED;
     }
@@ -114,30 +119,18 @@ public class GigaGal {
         // Get the standing right atlas region
         TextureAtlas.AtlasRegion region = Assets.instance.gigaGalAssets.standingRight;
 
-        switch (facing) {
-            case RIGHT:
-                switch (jumpState) {
-                    case GROUNDED:
-                        region = Assets.instance.gigaGalAssets.standingRight;
-                        break;
-                    case FALLING:
-                    case JUMPING:
-                        region = Assets.instance.gigaGalAssets.jumpingRight;
-                        break;
-                }
-                break;
-
-            case LEFT:
-                switch (jumpState) {
-                    case GROUNDED:
-                        region = Assets.instance.gigaGalAssets.standingLeft;
-                        break;
-                    case FALLING:
-                    case JUMPING:
-                        region = Assets.instance.gigaGalAssets.jumpingLeft;
-                        break;
-                }
-                break;
+        if (facing == Facing.RIGHT && jumpState != JumpState.GROUNDED) {
+            region = Assets.instance.gigaGalAssets.jumpingRight;
+        } else if (facing == Facing.RIGHT && walkState == WalkState.STANDING) {
+            region = Assets.instance.gigaGalAssets.standingRight;
+        } else if (facing == Facing.RIGHT && walkState == WalkState.WALKING) {
+            region = Assets.instance.gigaGalAssets.walkingRight;
+        } else if (facing == Facing.LEFT && jumpState != JumpState.GROUNDED) {
+            region = Assets.instance.gigaGalAssets.jumpingLeft;
+        } else if (facing == Facing.LEFT && walkState == WalkState.STANDING) {
+            region = Assets.instance.gigaGalAssets.standingLeft;
+        } else if (facing == Facing.LEFT && walkState == WalkState.WALKING) {
+            region = Assets.instance.gigaGalAssets.walkingLeft;
         }
 
         batch.draw(region.getTexture(),
@@ -165,5 +158,9 @@ public class GigaGal {
 
     public enum JumpState {
         JUMPING, FALLING, GROUNDED
+    }
+
+    public enum WalkState {
+        STANDING, WALKING
     }
 }
