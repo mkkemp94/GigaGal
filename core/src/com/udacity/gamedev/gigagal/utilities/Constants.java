@@ -29,6 +29,7 @@ public class Constants {
 
     public static final float GIGAGAL_MOVEMENT_SPEED = 96f;
 
-    public static final float GRAVITATIONAL_ACCELERATION = 60f;
-    public static final float GIGAGAL_JUMP_HEIGHT = 60f;
+    public static final float GRAVITY = 1000f;
+    public static final float GIGAGAL_JUMP_SPEED = 250;
+    public static final float GIGAGAL_JUMP_MAX_DURATION = 0.15f;
 }

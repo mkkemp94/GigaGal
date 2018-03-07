@@ -4,7 +4,9 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.TimeUtils;
 import com.udacity.gamedev.gigagal.utilities.Assets;
 import com.udacity.gamedev.gigagal.utilities.Constants;
 
@@ -21,42 +23,55 @@ public class GigaGal {
 
     private Vector2 position;
     private Facing facing;
+
+    private Vector2 velocity;
     private JumpState jumpState;
+    private long jumpStartTime;
 
     public GigaGal() {
         position = new Vector2(20, Constants.GIGAGAL_EYE_HEIGHT);
         facing = Facing.RIGHT;
-        jumpState = JumpState.GROUNDED;
+
+        velocity = new Vector2(0, 0);
+        jumpState = JumpState.FALLING;
     }
 
     public void update(float delta) {
+        velocity.y -= delta * Constants.GRAVITY;
+        position.mulAdd(velocity, delta);
+
+        if (jumpState != JumpState.JUMPING) {
+            jumpState = JumpState.FALLING;
+        }
+
+        // But if she's on the ground, stop there.
+        if (position.y - Constants.GIGAGAL_EYE_HEIGHT <= 0) {
+            velocity.y = 0;
+            jumpState = JumpState.GROUNDED;
+            position.y = Constants.GIGAGAL_EYE_HEIGHT;
+        }
+
+        if (Gdx.input.isKeyPressed(Input.Keys.SPACE)) {
+            switch (jumpState) {
+                case GROUNDED:
+                    startJump();
+                    break;
+                case JUMPING:
+                    continueJump();
+                    break;
+                case FALLING:
+                    break;
+            }
+        } else {
+            endJump();
+        }
+
         if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
             moveLeft(delta);
         }
 
         if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
             moveRight(delta);
-        }
-
-        if (Gdx.input.isKeyPressed(Input.Keys.SPACE)) {
-            jump(delta);
-        }
-
-        if (jumpState == JumpState.JUMPING) {
-            position.y += delta * Constants.GIGAGAL_JUMP_HEIGHT;
-
-            if (position.y >= Constants.GIGAGAL_JUMP_HEIGHT) {
-                jumpState = JumpState.FALLING;
-            }
-        }
-
-        if (jumpState == JumpState.FALLING) {
-            position.y -= delta * Constants.GRAVITATIONAL_ACCELERATION;
-
-            if (position.y <= Constants.GIGAGAL_EYE_HEIGHT) {
-                position.y = Constants.GIGAGAL_EYE_HEIGHT;
-                jumpState = JumpState.GROUNDED;
-            }
         }
     }
 
@@ -70,9 +85,27 @@ public class GigaGal {
         position.x += delta * Constants.GIGAGAL_MOVEMENT_SPEED;
     }
 
-    private void jump(float delta) {
-        if (jumpState == JumpState.GROUNDED) {
-            jumpState = JumpState.JUMPING;
+    private void startJump() {
+        jumpState = JumpState.JUMPING;
+        jumpStartTime = TimeUtils.nanoTime();
+        continueJump();
+    }
+
+    private void continueJump() {
+        if (jumpState == JumpState.JUMPING) {
+            float jumpDuration = MathUtils.nanoToSec * (TimeUtils.nanoTime() - jumpStartTime);
+
+            if (jumpDuration < Constants.GIGAGAL_JUMP_MAX_DURATION) {
+                velocity.y = Constants.GIGAGAL_JUMP_SPEED;
+            } else {
+                endJump();
+            }
+        }
+    }
+
+    private void endJump() {
+        if (jumpState == JumpState.JUMPING) {
+            jumpState = JumpState.FALLING;
         }
     }
 
