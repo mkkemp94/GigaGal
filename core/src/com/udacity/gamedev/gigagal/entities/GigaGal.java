@@ -1,5 +1,7 @@
 package com.udacity.gamedev.gigagal.entities;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.Vector2;
@@ -18,14 +20,27 @@ public class GigaGal {
     public static final String TAG = GigaGal.class.getName();
 
     private Vector2 position;
-    private Vector2 velocity;
 
     public GigaGal() {
         position = new Vector2(20, Constants.GIGAGAL_EYE_HEIGHT);
     }
 
     public void update(float delta) {
-        // TODO : Move, interact, and handle input as necessary
+        if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
+            moveLeft(delta);
+        }
+
+        if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
+            moveRight(delta);
+        }
+    }
+
+    private void moveLeft(float delta) {
+        position.x -= delta * Constants.GIGAGAL_MOVEMENT_SPEED;
+    }
+
+    private void moveRight(float delta) {
+        position.x += delta * Constants.GIGAGAL_MOVEMENT_SPEED;
     }
 
     public void render(SpriteBatch batch) {
