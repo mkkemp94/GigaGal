@@ -29,6 +29,7 @@ public class GigaGal {
     private WalkState walkState;
 
     private long jumpStartTime;
+    private long walkStartTime;
 
     public GigaGal() {
         position = new Vector2(20, Constants.GIGAGAL_EYE_HEIGHT);
@@ -79,12 +80,18 @@ public class GigaGal {
     }
 
     private void moveLeft(float delta) {
+        if (jumpState == JumpState.GROUNDED && walkState != WalkState.WALKING) {
+            walkStartTime = TimeUtils.nanoTime();
+        }
         walkState = WalkState.WALKING;
         facing = Facing.LEFT;
         position.x -= delta * Constants.GIGAGAL_MOVEMENT_SPEED;
     }
 
     private void moveRight(float delta) {
+        if (jumpState == JumpState.GROUNDED && walkState != WalkState.WALKING) {
+            walkStartTime = TimeUtils.nanoTime();
+        }
         walkState = WalkState.WALKING;
         facing = Facing.RIGHT;
         position.x += delta * Constants.GIGAGAL_MOVEMENT_SPEED;
@@ -124,13 +131,15 @@ public class GigaGal {
         } else if (facing == Facing.RIGHT && walkState == WalkState.STANDING) {
             region = Assets.instance.gigaGalAssets.standingRight;
         } else if (facing == Facing.RIGHT && walkState == WalkState.WALKING) {
-            region = Assets.instance.gigaGalAssets.walkingRight;
+            float walkTimeSeconds = MathUtils.nanoToSec * (TimeUtils.nanoTime() - walkStartTime);
+            region = Assets.instance.gigaGalAssets.walkRightAnimation.getKeyFrame(walkTimeSeconds);
         } else if (facing == Facing.LEFT && jumpState != JumpState.GROUNDED) {
             region = Assets.instance.gigaGalAssets.jumpingLeft;
         } else if (facing == Facing.LEFT && walkState == WalkState.STANDING) {
             region = Assets.instance.gigaGalAssets.standingLeft;
         } else if (facing == Facing.LEFT && walkState == WalkState.WALKING) {
-            region = Assets.instance.gigaGalAssets.walkingLeft;
+            float walkTimeSeconds = MathUtils.nanoToSec * (TimeUtils.nanoTime() - walkStartTime);
+            region = Assets.instance.gigaGalAssets.walkLeftAnimation.getKeyFrame(walkTimeSeconds);
         }
 
         batch.draw(region.getTexture(),
