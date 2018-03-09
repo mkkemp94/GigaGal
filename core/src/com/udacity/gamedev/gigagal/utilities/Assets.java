@@ -5,6 +5,7 @@ import com.badlogic.gdx.assets.AssetDescriptor;
 import com.badlogic.gdx.assets.AssetErrorListener;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.g2d.Animation;
+import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
 import com.badlogic.gdx.utils.Array;
@@ -23,6 +24,7 @@ public class Assets implements Disposable, AssetErrorListener {
     public static final Assets instance = new Assets();
 
     public GigaGalAssets gigaGalAssets;
+    public PlatformAssets platformAssets;
     private AssetManager assetManager;
 
     private Assets() {
@@ -41,6 +43,7 @@ public class Assets implements Disposable, AssetErrorListener {
 
         TextureAtlas atlas = assetManager.get(Constants.TEXTURE_ATLAS);
         gigaGalAssets = new GigaGalAssets(atlas);
+        platformAssets = new PlatformAssets(atlas);
     }
 
     @Override
@@ -65,7 +68,7 @@ public class Assets implements Disposable, AssetErrorListener {
         public final Animation<AtlasRegion> walkLeftAnimation;
         public final Animation<AtlasRegion> walkRightAnimation;
 
-        private GigaGalAssets(TextureAtlas atlas) {
+        public GigaGalAssets(TextureAtlas atlas) {
             standingRight = atlas.findRegion(Constants.STANDING_RIGHT);
             standingLeft = atlas.findRegion(Constants.STANDING_LEFT);
             jumpingLeft = atlas.findRegion(Constants.JUMPING_LEFT);
@@ -86,6 +89,21 @@ public class Assets implements Disposable, AssetErrorListener {
             walkingRightFrames.add(atlas.findRegion(Constants.WALKING_RIGHT_2));
             walkingRightFrames.add(atlas.findRegion(Constants.WALKING_RIGHT_3));
             walkRightAnimation = new Animation<AtlasRegion>(Constants.WALK_LOOP_FRAME_DURATION, walkingRightFrames, Animation.PlayMode.LOOP);
+        }
+    }
+
+    public class PlatformAssets {
+
+        public final NinePatch ninePatch;
+
+        public PlatformAssets(TextureAtlas atlas) {
+            AtlasRegion platform = atlas.findRegion(Constants.PLATFORM);
+            ninePatch = new NinePatch(platform,
+                    Constants.PLATFORM_EDGE,
+                    Constants.PLATFORM_EDGE,
+                    Constants.PLATFORM_EDGE,
+                    Constants.PLATFORM_EDGE
+            );
         }
     }
 }
