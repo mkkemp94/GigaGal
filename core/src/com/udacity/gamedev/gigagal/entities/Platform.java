@@ -13,10 +13,10 @@ public class Platform {
 
     public static final String TAG = Platform.class.getName();
 
-    private float top;
+    public float top;
     private float bottom;
-    private float left;
-    private float right;
+    public float left;
+    public float right;
 
     public Platform(float left, float top, float width, float height) {
         this.top = top;

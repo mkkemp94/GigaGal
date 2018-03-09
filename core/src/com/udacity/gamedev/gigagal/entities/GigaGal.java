@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.udacity.gamedev.gigagal.utilities.Assets;
 import com.udacity.gamedev.gigagal.utilities.Constants;
@@ -17,12 +18,25 @@ import com.udacity.gamedev.gigagal.utilities.Constants;
  * Also handles user input.
  */
 
+enum Facing {
+    RIGHT, LEFT
+}
+
+enum JumpState {
+    JUMPING, FALLING, GROUNDED
+}
+
+enum WalkState {
+    STANDING, WALKING
+}
+
 public class GigaGal {
 
     public static final String TAG = GigaGal.class.getName();
 
     private Vector2 position;
     private Vector2 velocity;
+    private Vector2 lastPosition;
 
     private Facing facing;
     private JumpState jumpState;
@@ -32,27 +46,47 @@ public class GigaGal {
     private long walkStartTime;
 
     public GigaGal() {
-        position = new Vector2(20, Constants.GIGAGAL_EYE_HEIGHT);
+        position = new Vector2(20, 20);
         velocity = new Vector2(0, 0);
+        lastPosition = new Vector2(position);
 
         facing = Facing.RIGHT;
         jumpState = JumpState.FALLING;
         walkState = WalkState.STANDING;
     }
 
-    public void update(float delta) {
-        velocity.y -= delta * Constants.GRAVITY;
+    public void update(float delta, Array<Platform> platforms) {
+        lastPosition.set(position);
+
+        velocity.y -= Constants.GRAVITY;
         position.mulAdd(velocity, delta);
 
         if (jumpState != JumpState.JUMPING) {
             jumpState = JumpState.FALLING;
+
+            // If she's on the ground, stop there.
+            if (position.y - Constants.GIGAGAL_EYE_HEIGHT <= 0) {
+                jumpState = JumpState.GROUNDED;
+                position.y = Constants.GIGAGAL_EYE_HEIGHT;
+                velocity.y = 0;
+            }
+
+            // If she's on a platform, stop there.
+            for (Platform platform : platforms) {
+                if (landedOnPlatform(platform)) {
+                    jumpState = JumpState.GROUNDED;
+                    velocity.y = 0;
+                    position.y = platform.top + Constants.GIGAGAL_EYE_HEIGHT;
+                }
+            }
         }
 
-        // But if she's on the ground, stop there.
-        if (position.y - Constants.GIGAGAL_EYE_HEIGHT <= 0) {
-            velocity.y = 0;
-            jumpState = JumpState.GROUNDED;
-            position.y = Constants.GIGAGAL_EYE_HEIGHT;
+        if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
+            moveLeft(delta);
+        } else if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
+            moveRight(delta);
+        } else {
+            walkState = WalkState.STANDING;
         }
 
         if (Gdx.input.isKeyPressed(Input.Keys.SPACE)) {
@@ -69,14 +103,24 @@ public class GigaGal {
         } else {
             endJump();
         }
+    }
 
-        if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
-            moveLeft(delta);
-        } else if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
-            moveRight(delta);
-        } else {
-            walkState = WalkState.STANDING;
+    private boolean landedOnPlatform(Platform platform) {
+        boolean leftFootIn = false;
+        boolean rightFootIn = false;
+        boolean straddle = false;
+
+        if (lastPosition.y - Constants.GIGAGAL_EYE_HEIGHT >= platform.top &&
+                position.y - Constants.GIGAGAL_EYE_HEIGHT < platform.top) {
+
+            float leftFoot = position.x - Constants.GIGAGAL_STANCE_WIDTH / 2;
+            float rightFoot = position.x + Constants.GIGAGAL_STANCE_WIDTH / 2;
+
+            leftFootIn = (leftFoot > platform.left && leftFoot < platform.right);
+            rightFootIn = (rightFoot > platform.left && rightFoot < platform.right);
+            straddle = (leftFoot < platform.left & rightFoot > platform.right);
         }
+        return leftFootIn || rightFootIn || straddle;
     }
 
     private void moveLeft(float delta) {
@@ -159,17 +203,5 @@ public class GigaGal {
                 false,
                 false
         );
-    }
-
-    public enum Facing {
-        RIGHT, LEFT
-    }
-
-    public enum JumpState {
-        JUMPING, FALLING, GROUNDED
-    }
-
-    public enum WalkState {
-        STANDING, WALKING
     }
 }
