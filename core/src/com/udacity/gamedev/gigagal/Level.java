@@ -14,7 +14,7 @@ public class Level {
 
     public static final String TAG = Level.class.getName();
 
-    private GigaGal gigaGal;
+    public GigaGal gigaGal;
     private Array<Platform> platforms;
 
     public Level() {
@@ -38,11 +38,11 @@ public class Level {
     }
 
     private void addDebugPlatforms() {
-//        platforms.add(new Platform(100, 60, 20, 20));
-//        platforms.add(new Platform(70, 90, 20, 20));
-        platforms.add(new Platform(15, 100, 30, 20));
-        platforms.add(new Platform(75, 90, 100, 65));
-        platforms.add(new Platform(35, 55, 50, 20));
-        platforms.add(new Platform(10, 20, 20, 9));
+        platforms.add(new Platform(100, 60, 20, 20));
+        platforms.add(new Platform(70, 90, 20, 20));
+//        platforms.add(new Platform(15, 100, 30, 20));
+//        platforms.add(new Platform(75, 90, 100, 65));
+//        platforms.add(new Platform(35, 55, 50, 20));
+//        platforms.add(new Platform(10, 20, 20, 9));
     }
 }

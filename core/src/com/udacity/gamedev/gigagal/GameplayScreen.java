@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.udacity.gamedev.gigagal.utilities.Assets;
+import com.udacity.gamedev.gigagal.utilities.ChaseCam;
 import com.udacity.gamedev.gigagal.utilities.Constants;
 
 /**
@@ -24,6 +25,7 @@ public class GameplayScreen extends ScreenAdapter {
     private SpriteBatch spriteBatch;
     private ShapeRenderer renderer;
     private ExtendViewport viewport;
+    private ChaseCam chaseCam;
 
     @Override
     public void show() {
@@ -35,6 +37,8 @@ public class GameplayScreen extends ScreenAdapter {
         renderer.setAutoShapeType(true);
         spriteBatch = new SpriteBatch();
         viewport = new ExtendViewport(Constants.WORLD_SIZE, Constants.WORLD_SIZE);
+
+        chaseCam = new ChaseCam(viewport.getCamera(), level.gigaGal);
     }
 
     @Override
@@ -51,6 +55,7 @@ public class GameplayScreen extends ScreenAdapter {
     @Override
     public void render(float delta) {
         level.update(delta);
+        chaseCam.update();
 
         viewport.apply();
 

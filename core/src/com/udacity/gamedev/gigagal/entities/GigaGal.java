@@ -34,7 +34,7 @@ public class GigaGal {
 
     public static final String TAG = GigaGal.class.getName();
 
-    private Vector2 position;
+    public Vector2 position;
     private Vector2 velocity;
     private Vector2 lastPosition;
 
