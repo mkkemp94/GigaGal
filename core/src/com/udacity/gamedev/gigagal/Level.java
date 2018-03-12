@@ -21,6 +21,7 @@ public class Level {
         gigaGal = new GigaGal();
         platforms = new Array<Platform>();
         platforms.add(new Platform(70, 30, 20, 20));
+        addDebugPlatforms();
     }
 
     public void update(float delta) {
@@ -34,5 +35,14 @@ public class Level {
         }
         gigaGal.render(spriteBatch);
         spriteBatch.end();
+    }
+
+    private void addDebugPlatforms() {
+//        platforms.add(new Platform(100, 60, 20, 20));
+//        platforms.add(new Platform(70, 90, 20, 20));
+        platforms.add(new Platform(15, 100, 30, 20));
+        platforms.add(new Platform(75, 90, 100, 65));
+        platforms.add(new Platform(35, 55, 50, 20));
+        platforms.add(new Platform(10, 20, 20, 9));
     }
 }
