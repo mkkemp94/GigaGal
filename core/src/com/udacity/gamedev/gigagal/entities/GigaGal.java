@@ -35,8 +35,11 @@ public class GigaGal {
     public static final String TAG = GigaGal.class.getName();
 
     public Vector2 position;
+
+    private Vector2 spawnLocation;
+
     private Vector2 velocity;
-    private Vector2 lastPosition;
+    private Vector2 lastFramePosition;
 
     private Facing facing;
     private JumpState jumpState;
@@ -45,10 +48,20 @@ public class GigaGal {
     private long jumpStartTime;
     private long walkStartTime;
 
-    public GigaGal(float x, float y) {
-        position = new Vector2(x, y);
-        velocity = new Vector2(0, 0);
-        lastPosition = new Vector2(position);
+    public GigaGal(Vector2 spawnLocation) {
+        this.spawnLocation = spawnLocation;
+
+        position = new Vector2();
+        lastFramePosition = new Vector2();
+        velocity = new Vector2();
+
+        init();
+    }
+
+    private void init() {
+        position.set(spawnLocation);
+        lastFramePosition.set(spawnLocation);
+        velocity.setZero();
 
         facing = Facing.RIGHT;
         jumpState = JumpState.FALLING;
@@ -56,10 +69,13 @@ public class GigaGal {
     }
 
     public void update(float delta, Array<Platform> platforms) {
-        lastPosition.set(position);
-
+        lastFramePosition.set(position);
         velocity.y -= Constants.GRAVITY;
         position.mulAdd(velocity, delta);
+
+        if (position.y < Constants.KILL_PLANE) {
+            init();
+        }
 
         if (jumpState != JumpState.JUMPING) {
             jumpState = JumpState.FALLING;
@@ -103,7 +119,7 @@ public class GigaGal {
         boolean rightFootIn = false;
         boolean straddle = false;
 
-        if (lastPosition.y - Constants.GIGAGAL_EYE_HEIGHT >= platform.top &&
+        if (lastFramePosition.y - Constants.GIGAGAL_EYE_HEIGHT >= platform.top &&
                 position.y - Constants.GIGAGAL_EYE_HEIGHT < platform.top) {
 
             float leftFoot = position.x - Constants.GIGAGAL_STANCE_WIDTH / 2;

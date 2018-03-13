@@ -47,4 +47,6 @@ public class Constants {
     public static final float GIGAGAL_JUMP_MAX_DURATION = 0.1f;
 
     public static final float GRAVITY = WORLD_SIZE / 10;
+
+    public static final float KILL_PLANE = -100;
 }

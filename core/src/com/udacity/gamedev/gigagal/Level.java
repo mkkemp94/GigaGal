@@ -1,6 +1,7 @@
 package com.udacity.gamedev.gigagal;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.udacity.gamedev.gigagal.entities.GigaGal;
 import com.udacity.gamedev.gigagal.entities.Platform;
@@ -36,16 +37,16 @@ public class Level {
     }
 
     private void addDebugPlatforms() {
-        platforms.add(new Platform(100, 60, 20, 20));
-        platforms.add(new Platform(70, 90, 20, 20));
-        platforms.add(new Platform(70, 30, 20, 20));
+//        platforms.add(new Platform(100, 60, 20, 20));
+//        platforms.add(new Platform(70, 90, 20, 20));
+//        platforms.add(new Platform(70, 30, 20, 20));
 
-//        platforms.add(new Platform(15, 100, 30, 20));
-//        platforms.add(new Platform(75, 90, 100, 65));
-//        platforms.add(new Platform(35, 55, 50, 20));
+        platforms.add(new Platform(15, 100, 30, 20));
+        platforms.add(new Platform(75, 90, 100, 65));
+        platforms.add(new Platform(35, 55, 50, 20));
 
         platforms.add(new Platform(10, 20, 20, 9));
 
-        gigaGal = new GigaGal(20, 40);
+        gigaGal = new GigaGal(new Vector2(15, 40));
     }
 }
