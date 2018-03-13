@@ -45,8 +45,8 @@ public class GigaGal {
     private long jumpStartTime;
     private long walkStartTime;
 
-    public GigaGal() {
-        position = new Vector2(20, 20);
+    public GigaGal(float x, float y) {
+        position = new Vector2(x, y);
         velocity = new Vector2(0, 0);
         lastPosition = new Vector2(position);
 
@@ -63,13 +63,6 @@ public class GigaGal {
 
         if (jumpState != JumpState.JUMPING) {
             jumpState = JumpState.FALLING;
-
-            // If she's on the ground, stop there.
-            if (position.y - Constants.GIGAGAL_EYE_HEIGHT <= 0) {
-                jumpState = JumpState.GROUNDED;
-                position.y = Constants.GIGAGAL_EYE_HEIGHT;
-                velocity.y = 0;
-            }
 
             // If she's on a platform, stop there.
             for (Platform platform : platforms) {
