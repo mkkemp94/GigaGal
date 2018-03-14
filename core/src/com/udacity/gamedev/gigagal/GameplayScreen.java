@@ -55,7 +55,7 @@ public class GameplayScreen extends ScreenAdapter {
     @Override
     public void render(float delta) {
         level.update(delta);
-        chaseCam.update();
+        chaseCam.update(delta);
 
         viewport.apply();
 

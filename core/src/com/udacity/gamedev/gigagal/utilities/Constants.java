@@ -49,4 +49,6 @@ public class Constants {
     public static final float GRAVITY = WORLD_SIZE / 10;
 
     public static final float KILL_PLANE = -100;
+
+    public static final float CHASE_CAM_MOVE_SPEED = 128;
 }
