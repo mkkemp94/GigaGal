@@ -8,8 +8,13 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.TimeUtils;
+import com.udacity.gamedev.gigagal.Level;
 import com.udacity.gamedev.gigagal.utilities.Assets;
 import com.udacity.gamedev.gigagal.utilities.Constants;
+import com.udacity.gamedev.gigagal.utilities.Enums.Direction;
+import com.udacity.gamedev.gigagal.utilities.Enums.JumpState;
+import com.udacity.gamedev.gigagal.utilities.Enums.WalkState;
+import com.udacity.gamedev.gigagal.utilities.Utils;
 
 /**
  * Created by mkemp on 3/6/18.
@@ -18,43 +23,32 @@ import com.udacity.gamedev.gigagal.utilities.Constants;
  * Also handles user input.
  */
 
-enum Facing {
-    RIGHT, LEFT
-}
-
-enum JumpState {
-    JUMPING, FALLING, GROUNDED
-}
-
-enum WalkState {
-    STANDING, WALKING
-}
-
 public class GigaGal {
 
     public static final String TAG = GigaGal.class.getName();
 
-    public Vector2 position;
+    Vector2 position;
 
-    private Vector2 spawnLocation;
+    Vector2 spawnLocation;
 
-    private Vector2 velocity;
-    private Vector2 lastFramePosition;
+    Vector2 velocity;
+    Vector2 lastFramePosition;
 
-    private Facing facing;
-    private JumpState jumpState;
-    private WalkState walkState;
+    Direction direction;
+    JumpState jumpState;
+    WalkState walkState;
 
-    private long jumpStartTime;
-    private long walkStartTime;
+    long jumpStartTime;
+    long walkStartTime;
 
-    public GigaGal(Vector2 spawnLocation) {
+    Level level;
+
+    public GigaGal(Vector2 spawnLocation, Level level) {
         this.spawnLocation = spawnLocation;
-
+        this.level = level;
         position = new Vector2();
         lastFramePosition = new Vector2();
         velocity = new Vector2();
-
         init();
     }
 
@@ -63,9 +57,13 @@ public class GigaGal {
         lastFramePosition.set(spawnLocation);
         velocity.setZero();
 
-        facing = Facing.RIGHT;
+        direction = Direction.RIGHT;
         jumpState = JumpState.FALLING;
-        walkState = WalkState.STANDING;
+        walkState = WalkState.NOT_WALKING;
+    }
+
+    public Vector2 getPosition() {
+        return position;
     }
 
     public void update(float delta, Array<Platform> platforms) {
@@ -95,7 +93,7 @@ public class GigaGal {
         } else if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
             moveRight(delta);
         } else {
-            walkState = WalkState.STANDING;
+            walkState = WalkState.NOT_WALKING;
         }
 
         if (Gdx.input.isKeyPressed(Input.Keys.SPACE)) {
@@ -137,7 +135,7 @@ public class GigaGal {
             walkStartTime = TimeUtils.nanoTime();
         }
         walkState = WalkState.WALKING;
-        facing = Facing.LEFT;
+        direction = Direction.LEFT;
         position.x -= delta * Constants.GIGAGAL_MOVEMENT_SPEED;
     }
 
@@ -146,7 +144,7 @@ public class GigaGal {
             walkStartTime = TimeUtils.nanoTime();
         }
         walkState = WalkState.WALKING;
-        facing = Facing.RIGHT;
+        direction = Direction.RIGHT;
         position.x += delta * Constants.GIGAGAL_MOVEMENT_SPEED;
     }
 
@@ -158,9 +156,7 @@ public class GigaGal {
 
     private void continueJump() {
         if (jumpState == JumpState.JUMPING) {
-            float jumpDuration = MathUtils.nanoToSec * (TimeUtils.nanoTime() - jumpStartTime);
-
-            if (jumpDuration < Constants.GIGAGAL_JUMP_MAX_DURATION) {
+            if (Utils.secondsSince(jumpStartTime) < Constants.GIGAGAL_JUMP_MAX_DURATION) {
                 velocity.y = Constants.GIGAGAL_JUMP_SPEED;
             } else {
                 endJump();
@@ -179,38 +175,24 @@ public class GigaGal {
         // Get the standing right atlas region
         TextureAtlas.AtlasRegion region = Assets.instance.gigaGalAssets.standingRight;
 
-        if (facing == Facing.RIGHT && jumpState != JumpState.GROUNDED) {
+        if (direction == Direction.RIGHT && jumpState != JumpState.GROUNDED) {
             region = Assets.instance.gigaGalAssets.jumpingRight;
-        } else if (facing == Facing.RIGHT && walkState == WalkState.STANDING) {
+        } else if (direction == Direction.RIGHT && walkState == WalkState.NOT_WALKING) {
             region = Assets.instance.gigaGalAssets.standingRight;
-        } else if (facing == Facing.RIGHT && walkState == WalkState.WALKING) {
+        } else if (direction == Direction.RIGHT && walkState == WalkState.WALKING) {
             float walkTimeSeconds = MathUtils.nanoToSec * (TimeUtils.nanoTime() - walkStartTime);
             region = Assets.instance.gigaGalAssets.walkRightAnimation.getKeyFrame(walkTimeSeconds);
-        } else if (facing == Facing.LEFT && jumpState != JumpState.GROUNDED) {
+        } else if (direction == Direction.LEFT && jumpState != JumpState.GROUNDED) {
             region = Assets.instance.gigaGalAssets.jumpingLeft;
-        } else if (facing == Facing.LEFT && walkState == WalkState.STANDING) {
+        } else if (direction == Direction.LEFT && walkState == WalkState.NOT_WALKING) {
             region = Assets.instance.gigaGalAssets.standingLeft;
-        } else if (facing == Facing.LEFT && walkState == WalkState.WALKING) {
+        } else if (direction == Direction.LEFT && walkState == WalkState.WALKING) {
             float walkTimeSeconds = MathUtils.nanoToSec * (TimeUtils.nanoTime() - walkStartTime);
             region = Assets.instance.gigaGalAssets.walkLeftAnimation.getKeyFrame(walkTimeSeconds);
         }
 
-        batch.draw(region.getTexture(),
+        Utils.drawTextureRegion(batch, region,
                 position.x - Constants.GIGAGAL_EYE_POSITION.x,
-                position.y - Constants.GIGAGAL_EYE_POSITION.y,
-                0,
-                0,
-                region.getRegionWidth(),
-                region.getRegionHeight(),
-                1,
-                1,
-                0,
-                region.getRegionX(),
-                region.getRegionY(),
-                region.getRegionWidth(),
-                region.getRegionHeight(),
-                false,
-                false
-        );
+                position.y - Constants.GIGAGAL_EYE_POSITION.y);
     }
 }

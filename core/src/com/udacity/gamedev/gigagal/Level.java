@@ -60,7 +60,7 @@ public class Level {
 
         platforms.add(new Platform(10, 20, 20, 9));
 
-        gigaGal = new GigaGal(new Vector2(15, 40));
+        gigaGal = new GigaGal(new Vector2(15, 40), this);
         enemy = new Enemy(new Vector2(110, 110));
     }
 }

@@ -14,12 +14,12 @@ public class ChaseCam {
     public static final String TAG = ChaseCam.class.getName();
 
     private Camera camera;
-    private GigaGal gigaGal;
+    private GigaGal target;
     private Boolean following;
 
-    public ChaseCam(Camera camera, GigaGal gigaGal) {
+    public ChaseCam(Camera camera, GigaGal target) {
         this.camera = camera;
-        this.gigaGal = gigaGal;
+        this.target = target;
         following = true;
     }
 
@@ -32,8 +32,8 @@ public class ChaseCam {
 
         // Normal camera
         if (following) {
-            camera.position.x = gigaGal.position.x;
-            camera.position.y = gigaGal.position.y;
+            camera.position.x = target.getPosition().x;
+            camera.position.y = target.getPosition().y;
         }
 
         // Debug camera
