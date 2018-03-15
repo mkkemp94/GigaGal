@@ -21,6 +21,7 @@ public class Constants {
     public static final float WORLD_SIZE = 128;
 
     public static final String TEXTURE_ATLAS = "images/gigagal.pack.atlas";
+    public static final String ENEMY_SPRITE     = "enemy";
     public static final String STANDING_RIGHT   = "standing-right";
     public static final String STANDING_LEFT    = "standing-left";
     public static final String JUMPING_LEFT     = "jumping-left";
