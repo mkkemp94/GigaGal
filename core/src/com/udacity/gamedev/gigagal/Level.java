@@ -3,9 +3,11 @@ package com.udacity.gamedev.gigagal;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
-import com.udacity.gamedev.gigagal.entities.Enemy;
 import com.udacity.gamedev.gigagal.entities.GigaGal;
 import com.udacity.gamedev.gigagal.entities.Platform;
+import com.udacity.gamedev.gigagal.utilities.Assets;
+import com.udacity.gamedev.gigagal.utilities.Constants;
+import com.udacity.gamedev.gigagal.utilities.Utils;
 
 /**
  * Created by mkemp on 3/6/18.
@@ -17,7 +19,7 @@ public class Level {
     public static final String TAG = Level.class.getName();
 
     public GigaGal gigaGal;
-    public Enemy enemy;
+//    public Enemy enemy;
     private Array<Platform> platforms;
 
     public Level() {
@@ -35,7 +37,8 @@ public class Level {
             platform.render(spriteBatch);
         }
         gigaGal.render(spriteBatch);
-        enemy.render(spriteBatch);
+        Utils.drawTextureRegion(spriteBatch, Assets.instance.enemyAssets.enemy, new Vector2(100, 100), Constants.ENEMY_CENTER);
+//        enemy.render(spriteBatch);
         spriteBatch.end();
     }
 
@@ -61,6 +64,6 @@ public class Level {
         platforms.add(new Platform(10, 20, 20, 9));
 
         gigaGal = new GigaGal(new Vector2(15, 40), this);
-        enemy = new Enemy(new Vector2(110, 110));
+//        enemy = new Enemy(new Vector2(110, 110));
     }
 }
