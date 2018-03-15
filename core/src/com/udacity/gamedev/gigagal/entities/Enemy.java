@@ -4,6 +4,8 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.Vector2;
 import com.udacity.gamedev.gigagal.utilities.Assets;
+import com.udacity.gamedev.gigagal.utilities.Constants;
+import com.udacity.gamedev.gigagal.utilities.Utils;
 
 /**
  * Created by mkemp on 3/14/18.
@@ -11,31 +13,20 @@ import com.udacity.gamedev.gigagal.utilities.Assets;
 
 public class Enemy {
 
+    private Platform platform;
     private Vector2 position;
 
-    public Enemy(Vector2 position) {
-        this.position = position;
+    public Enemy(Platform platform) {
+        this.platform = platform;
+        this.position = new Vector2(platform.left, platform.top + Constants.ENEMY_CENTER.y);
+    }
+
+    public void update(float delta) {
+
     }
 
     public void render(SpriteBatch batch) {
         TextureAtlas.AtlasRegion region = Assets.instance.enemyAssets.enemy;
-        batch.draw(
-                region.getTexture(),
-                position.x,
-                position.y,
-                0,
-                0,
-                region.getRegionWidth(),
-                region.getRegionHeight(),
-                1,
-                1,
-                0,
-                region.getRegionX(),
-                region.getRegionY(),
-                region.getRegionWidth(),
-                region.getRegionHeight(),
-                false,
-                false
-        );
+        Utils.drawTextureRegion(batch, region, position, Constants.ENEMY_CENTER);
     }
 }

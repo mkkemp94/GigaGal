@@ -5,7 +5,6 @@ import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.udacity.gamedev.gigagal.utilities.Assets;
 import com.udacity.gamedev.gigagal.utilities.ChaseCam;
@@ -23,7 +22,6 @@ public class GameplayScreen extends ScreenAdapter {
 
     private Level level;
     private SpriteBatch spriteBatch;
-    private ShapeRenderer renderer;
     private ExtendViewport viewport;
     private ChaseCam chaseCam;
 
@@ -31,10 +29,8 @@ public class GameplayScreen extends ScreenAdapter {
     public void show() {
         Assets.instance.init();
 
-        level = new Level();
+        level = new Level(viewport);
 
-        renderer = new ShapeRenderer();
-        renderer.setAutoShapeType(true);
         spriteBatch = new SpriteBatch();
         viewport = new ExtendViewport(Constants.WORLD_SIZE, Constants.WORLD_SIZE);
 
@@ -64,7 +60,8 @@ public class GameplayScreen extends ScreenAdapter {
         Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         spriteBatch.setProjectionMatrix(viewport.getCamera().combined);
-        renderer.setProjectionMatrix(viewport.getCamera().combined);
+        spriteBatch.begin();
         level.render(spriteBatch);
+        spriteBatch.end();
     }
 }
