@@ -48,4 +48,5 @@ public class Constants {
     // Enemy
     public static final String ENEMY_SPRITE     = "enemy";
     public static final Vector2 ENEMY_CENTER = new Vector2(14, 22);
+    public static final float ENEMY_MOVEMENT_SPEED = 30;
 }
