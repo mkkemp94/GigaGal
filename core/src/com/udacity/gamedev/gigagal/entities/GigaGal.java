@@ -78,13 +78,16 @@ public class GigaGal {
 
         // Land on/fall off platforms
         if (jumpState != JumpState.JUMPING) {
-            jumpState = JumpState.FALLING;
+            if (jumpState != JumpState.RECOILING) {
+                jumpState = JumpState.FALLING;
+            }
 
             // If she's on a platform, stop there.
             for (Platform platform : platforms) {
                 if (landedOnPlatform(platform)) {
                     jumpState = JumpState.GROUNDED;
                     velocity.y = 0;
+                    velocity.x = 0;
                     position.y = platform.top + Constants.GIGAGAL_EYE_HEIGHT;
                 }
             }
@@ -113,13 +116,16 @@ public class GigaGal {
             }
         }
 
-        if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
-            moveLeft(delta);
-        } else if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
-            moveRight(delta);
-        } else {
-            walkState = WalkState.NOT_WALKING;
+        if (jumpState != JumpState.RECOILING) {
+            if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
+                moveLeft(delta);
+            } else if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
+                moveRight(delta);
+            } else {
+                walkState = WalkState.NOT_WALKING;
+            }
         }
+
 
         if (Gdx.input.isKeyPressed(Input.Keys.SPACE)) {
             switch (jumpState) {
@@ -197,6 +203,7 @@ public class GigaGal {
 
     private void recoilFromEnemy(Direction direction) {
 
+        jumpState = JumpState.RECOILING;
         velocity.y = Constants.KNOCKBACK_VELOCITY.y;
 
         if (direction == Direction.LEFT) {
