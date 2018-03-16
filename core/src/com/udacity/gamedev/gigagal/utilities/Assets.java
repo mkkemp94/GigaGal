@@ -26,6 +26,9 @@ public class Assets implements Disposable, AssetErrorListener {
     public GigaGalAssets gigaGalAssets;
     public PlatformAssets platformAssets;
     public EnemyAssets enemyAssets;
+    public BulletAssets bulletAssets;
+    public ExplosionAssets explosionAssets;
+    public PowerupAssets powerupAssets;
     private AssetManager assetManager;
 
     private Assets() {
@@ -46,6 +49,9 @@ public class Assets implements Disposable, AssetErrorListener {
         gigaGalAssets = new GigaGalAssets(atlas);
         platformAssets = new PlatformAssets(atlas);
         enemyAssets = new EnemyAssets(atlas);
+        bulletAssets = new BulletAssets(atlas);
+        explosionAssets = new ExplosionAssets(atlas);
+        powerupAssets = new PowerupAssets(atlas);
     }
 
     @Override
@@ -100,12 +106,17 @@ public class Assets implements Disposable, AssetErrorListener {
 
         public PlatformAssets(TextureAtlas atlas) {
             AtlasRegion platform = atlas.findRegion(Constants.PLATFORM);
-            ninePatch = new NinePatch(platform,
-                    Constants.PLATFORM_EDGE,
-                    Constants.PLATFORM_EDGE,
-                    Constants.PLATFORM_EDGE,
-                    Constants.PLATFORM_EDGE
-            );
+            int edge = Constants.PLATFORM_EDGE;
+            ninePatch = new NinePatch(platform, edge, edge, edge, edge);
+        }
+    }
+
+    public class BulletAssets {
+
+        public final AtlasRegion bullet;
+
+        public BulletAssets(TextureAtlas atlas) {
+            bullet = atlas.findRegion(Constants.BULLET_SPRITE);
         }
     }
 
@@ -115,6 +126,35 @@ public class Assets implements Disposable, AssetErrorListener {
 
         public EnemyAssets(TextureAtlas atlas) {
             enemy = atlas.findRegion(Constants.ENEMY_SPRITE);
+        }
+    }
+
+    public class ExplosionAssets {
+
+        public final Animation<AtlasRegion> animation;
+
+        public ExplosionAssets(TextureAtlas atlas) {
+            AtlasRegion smallExplosion = atlas.findRegion(Constants.EXPLOSION_SMALL);
+            AtlasRegion mediumExplosion = atlas.findRegion(Constants.EXPLOSION_MEDIUM);
+            AtlasRegion largeExplosion = atlas.findRegion(Constants.EXPLOSION_LARGE);
+
+            Array<AtlasRegion> frames = new Array<AtlasRegion>();
+            frames.add(smallExplosion);
+            frames.add(mediumExplosion);
+            frames.add(largeExplosion);
+
+            animation = new Animation<AtlasRegion>(
+                    Constants.EXPLOSION_DURATION / frames.size,
+                    frames,
+                    Animation.PlayMode.NORMAL
+            );
+        }
+    }
+
+    public class PowerupAssets {
+        public final AtlasRegion powerup;
+        public PowerupAssets(TextureAtlas atlas) {
+            powerup = atlas.findRegion(Constants.POWERUP_SPRITE);
         }
     }
 }

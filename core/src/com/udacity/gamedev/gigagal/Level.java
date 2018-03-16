@@ -8,6 +8,9 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import com.udacity.gamedev.gigagal.entities.Enemy;
 import com.udacity.gamedev.gigagal.entities.GigaGal;
 import com.udacity.gamedev.gigagal.entities.Platform;
+import com.udacity.gamedev.gigagal.utilities.Assets;
+import com.udacity.gamedev.gigagal.utilities.Constants;
+import com.udacity.gamedev.gigagal.utilities.Utils;
 
 /**
  * Created by mkemp on 3/6/18.
@@ -47,15 +50,44 @@ public class Level {
         }
 
         gigaGal.render(spriteBatch);
+
+        Utils.drawTextureRegion(
+                spriteBatch,
+                Assets.instance.bulletAssets.bullet,
+                new Vector2(0, 0),
+                Constants.BULLET_CENTER
+        );
+
+        Utils.drawTextureRegion(
+                spriteBatch,
+                Assets.instance.powerupAssets.powerup,
+                new Vector2(50, 0),
+                Constants.POWERUP_CENTER
+        );
+
+        Utils.drawTextureRegion(
+                spriteBatch,
+                Assets.instance.explosionAssets.animation.getKeyFrame(0),
+                new Vector2(0, 50),
+                Constants.EXPLOSION_CENTER
+        );
+
+        Utils.drawTextureRegion(
+                spriteBatch,
+                Assets.instance.explosionAssets.animation.getKeyFrame(Constants.EXPLOSION_DURATION * 0.5f),
+                new Vector2(50, 50),
+                Constants.EXPLOSION_CENTER
+        );
+
+        Utils.drawTextureRegion(
+                spriteBatch,
+                Assets.instance.explosionAssets.animation.getKeyFrame(Constants.EXPLOSION_DURATION * 0.75f),
+                new Vector2(100, 50),
+                Constants.EXPLOSION_CENTER
+        );
     }
 
     private void initializeDebugLevel() {
-//        platforms.add(new Platform(100, 60, 20, 20));
-//        platforms.add(new Platform(70, 90, 20, 20));
-//        platforms.add(new Platform(70, 30, 20, 20));
-//        platforms.add(new Platform(165, 55, 70, 10));
-//        platforms.add(new Platform(210, 90, 30, 20));
-//        platforms.add(new Platform(250, 70, 20, 10));
 
         gigaGal = new GigaGal(new Vector2(15, 40), this);
         platforms = new Array<Platform>();
@@ -67,15 +99,8 @@ public class Level {
         platforms.add(enemyPlatform);
 
         enemies.add(new Enemy(enemyPlatform));
-
         platforms.add(new Platform(35, 55, 50, 20));
         platforms.add(new Platform(10, 20, 20, 9));
-
-//        platforms.add(new Platform(100, 110, 30, 9));
-//        platforms.add(new Platform(150, 150, 30, 9));
-//        platforms.add(new Platform(150, 180, 30, 9));
-//        platforms.add(new Platform(200, 200, 9, 9));
-//        platforms.add(new Platform(280, 100, 30, 9));
     }
 
     public Array<Platform> getPlatforms() {
