@@ -5,6 +5,7 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.TimeUtils;
@@ -75,6 +76,7 @@ public class GigaGal {
             init();
         }
 
+        // Land on/fall off platforms
         if (jumpState != JumpState.JUMPING) {
             jumpState = JumpState.FALLING;
 
@@ -84,6 +86,29 @@ public class GigaGal {
                     jumpState = JumpState.GROUNDED;
                     velocity.y = 0;
                     position.y = platform.top + Constants.GIGAGAL_EYE_HEIGHT;
+                }
+            }
+        }
+
+        // Collide with enemies
+        Rectangle gigaGalBounds = new Rectangle(
+                position.x - Constants.GIGAGAL_STANCE_WIDTH / 2,
+                position.y - Constants.GIGAGAL_EYE_HEIGHT,
+                Constants.GIGAGAL_STANCE_WIDTH,
+                Constants.GIGAGAL_HEIGHT
+        );
+        for (Enemy enemy : level.getEnemies()) {
+            Rectangle enemyBounds = new Rectangle(
+                    enemy.position.x - Constants.ENEMY_COLLISION_RADIUS,
+                    enemy.position.y - Constants.ENEMY_COLLISION_RADIUS,
+                    2 * Constants.ENEMY_COLLISION_RADIUS,
+                    2 * Constants.ENEMY_COLLISION_RADIUS
+            );
+            if (gigaGalBounds.overlaps(enemyBounds)) {
+                if (position.x < enemy.position.x) {
+                    recoilFromEnemy(Direction.LEFT);
+                } else {
+                    recoilFromEnemy(Direction.RIGHT);
                 }
             }
         }
@@ -167,6 +192,18 @@ public class GigaGal {
     private void endJump() {
         if (jumpState == JumpState.JUMPING) {
             jumpState = JumpState.FALLING;
+        }
+    }
+
+    private void recoilFromEnemy(Direction direction) {
+
+        velocity.y = Constants.KNOCKBACK_VELOCITY.y;
+
+        if (direction == Direction.LEFT) {
+            velocity.x = -Constants.KNOCKBACK_VELOCITY.x;
+        } else {
+            velocity.x = Constants.KNOCKBACK_VELOCITY.x;
+
         }
     }
 

@@ -82,6 +82,10 @@ public class Level {
         return platforms;
     }
 
+    public DelayedRemovalArray<Enemy> getEnemies() {
+        return enemies;
+    }
+
     public Viewport getViewport() {
         return viewport;
     }

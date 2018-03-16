@@ -27,6 +27,7 @@ public class Constants {
     public static final float GIGAGAL_MOVEMENT_SPEED = 100;
 
     public static final float GIGAGAL_JUMP_SPEED = 200;
+    public static final Vector2 KNOCKBACK_VELOCITY = new Vector2(200, 200);
     public static final float GIGAGAL_JUMP_MAX_DURATION = 0.1f;
 
     public static final String STANDING_RIGHT   = "standing-right";
@@ -51,4 +52,5 @@ public class Constants {
     public static final float ENEMY_MOVEMENT_SPEED = 30;
     public static final float ENEMY_BOB_AMPLITUDE = 2;
     public static final float ENEMY_BOB_PERIOD = 3;
+    public static final float ENEMY_COLLISION_RADIUS = 15;
 }
