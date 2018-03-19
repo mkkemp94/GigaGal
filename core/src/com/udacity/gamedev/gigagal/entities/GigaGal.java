@@ -126,8 +126,7 @@ public class GigaGal {
             }
         }
 
-
-        if (Gdx.input.isKeyPressed(Input.Keys.SPACE)) {
+        if (Gdx.input.isKeyPressed(Input.Keys.Z)) {
             switch (jumpState) {
                 case GROUNDED:
                     startJump();
@@ -141,6 +140,24 @@ public class GigaGal {
         } else {
             endJump();
         }
+
+        if (Gdx.input.isKeyJustPressed(Input.Keys.X)) {
+            fireCannon();
+        }
+    }
+
+    private void fireCannon() {
+        Vector2 bulletPos;
+        bulletPos = (direction == Direction.RIGHT) ?
+                new Vector2(
+                    position.x + Constants.GIGAGAL_CANNON_OFFSET.x,
+                    position.y + Constants.GIGAGAL_CANNON_OFFSET.y
+                ) :
+                new Vector2(
+                    position.x - Constants.GIGAGAL_CANNON_OFFSET.x,
+                    position.y + Constants.GIGAGAL_CANNON_OFFSET.y
+                );
+        level.spawnBullet(bulletPos, direction);
     }
 
     private boolean landedOnPlatform(Platform platform) {

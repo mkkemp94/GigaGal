@@ -1,7 +1,6 @@
 package com.udacity.gamedev.gigagal;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.DelayedRemovalArray;
@@ -39,18 +38,18 @@ public class Level {
     public void update(float delta) {
         gigaGal.update(delta, platforms);
 
-        Direction direction;
-        if (MathUtils.randomBoolean()) {
-            direction = Direction.RIGHT;
-        } else {
-            direction = Direction.LEFT;
-        }
-
-        float x = (MathUtils.random(viewport.getWorldWidth()));
-        float y = (MathUtils.random(viewport.getWorldHeight()));
-
-        Vector2 position = new Vector2(x, y);
-        spawnBullet(position, direction);
+//        Direction direction;
+//        if (MathUtils.randomBoolean()) {
+//            direction = Direction.RIGHT;
+//        } else {
+//            direction = Direction.LEFT;
+//        }
+//
+//        float x = (MathUtils.random(viewport.getWorldWidth()));
+//        float y = (MathUtils.random(viewport.getWorldHeight()));
+//
+//        Vector2 position = new Vector2(x, y);
+//        spawnBullet(position, direction);
 
         for (Bullet bullet : bullets) {
             bullet.update(delta);
@@ -147,7 +146,7 @@ public class Level {
         this.gigaGal = gigaGal;
     }
 
-    private void spawnBullet(Vector2 position, Direction direction) {
+    public void spawnBullet(Vector2 position, Direction direction) {
         bullets.add(new Bullet(position, direction));
     }
 }

@@ -26,7 +26,7 @@ public class ChaseCam {
     public void update(float delta) {
 
         // Switch camera mode
-        if (Gdx.input.isKeyJustPressed(Input.Keys.Z)){
+        if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE)){
             following = ! following;
         }
 
