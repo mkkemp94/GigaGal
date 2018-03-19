@@ -36,20 +36,31 @@ public class Level {
     }
 
     public void update(float delta) {
+
+        // Update Giga Gal
         gigaGal.update(delta, platforms);
 
+        // Update bullets
+        bullets.begin();
         for (Bullet bullet : bullets) {
             bullet.update(delta);
-
             if (!bullet.active) {
                 bullets.removeValue(bullet, false);
             }
         }
+        bullets.end();
 
+        // Update enemies
+        enemies.begin();
         for (int i = 0; i < enemies.size; i++) {
             Enemy enemy = enemies.get(i);
             enemy.update(delta);
+
+            if (enemy.health < 1) {
+                enemies.removeIndex(i);
+            }
         }
+        enemies.end();
     }
 
     public void render(SpriteBatch spriteBatch) {

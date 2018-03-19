@@ -18,6 +18,8 @@ public class Bullet {
     private Level level;
     private Direction direction;
     public Vector2 position;
+
+    //TODO : When bullet hits enemy, set active to false.
     public boolean active;
 
     public Bullet(Level level, Vector2 position, Direction direction) {
@@ -29,6 +31,8 @@ public class Bullet {
     }
 
     public void update(float delta) {
+
+        // Move in direction
         switch (direction) {
             case LEFT:
                 position.x -= delta * Constants.BULLET_MOVE_SPEED;
@@ -38,12 +42,20 @@ public class Bullet {
                 break;
         }
 
+        // Fly off screen
         float worldWidth = level.getViewport().getWorldWidth();
         float cameraX = level.getViewport().getCamera().position.x;
-
         if (position.x > cameraX + worldWidth / 2 ||
                 position.x < cameraX - worldWidth / 2) {
             active = false;
+        }
+
+        // Hit enemies
+        for (Enemy enemy : level.getEnemies()) {
+            if (position.dst(enemy.position) < Constants.ENEMY_HIT_DETECTION_RADIUS) {
+                active = false;
+                enemy.health -= 1;
+            }
         }
     }
 

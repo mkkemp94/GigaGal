@@ -54,6 +54,8 @@ public class Constants {
     public static final float ENEMY_BOB_AMPLITUDE = 2;
     public static final float ENEMY_BOB_PERIOD = 3;
     public static final float ENEMY_COLLISION_RADIUS = 15;
+    public static final float ENEMY_HEALTH = 5;
+    public static final float ENEMY_HIT_DETECTION_RADIUS = 17;
 
     public static final String BULLET_SPRITE    = "bullet";
     public static final Vector2 BULLET_CENTER = new Vector2(3, 2);

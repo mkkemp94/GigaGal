@@ -21,11 +21,15 @@ public class Enemy {
     private Enums.Direction direction;
     private long startTime;
 
+    // TODO : Add health to enemy.
+    public float health;
+
     public Enemy(Platform platform) {
         this.platform = platform;
         this.position = new Vector2(platform.left, platform.top + Constants.ENEMY_CENTER.y);
         direction = Enums.Direction.LEFT;
         startTime = TimeUtils.nanoTime();
+        health = Constants.ENEMY_HEALTH;
     }
 
     public void update(float delta) {
