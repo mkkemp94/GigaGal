@@ -39,8 +39,8 @@ public class Assets implements Disposable, AssetErrorListener {
      * Initialize this class.
      * Pass the texture atlas to a new GigaGalAssets object.
      */
-    public void init() {
-        this.assetManager = new AssetManager();
+    public void init(AssetManager assetManager) {
+        this.assetManager = assetManager;
         assetManager.setErrorListener(this);
         assetManager.load(Constants.TEXTURE_ATLAS, TextureAtlas.class);
         assetManager.finishLoading();
