@@ -20,8 +20,6 @@ public class Enemy {
     public Vector2 position;
     private Enums.Direction direction;
     private long startTime;
-
-    // TODO : Add health to enemy.
     public float health;
 
     public Enemy(Platform platform) {

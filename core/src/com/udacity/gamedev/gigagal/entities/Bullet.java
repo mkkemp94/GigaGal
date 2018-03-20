@@ -18,8 +18,6 @@ public class Bullet {
     private Level level;
     private Direction direction;
     public Vector2 position;
-
-    //TODO : When bullet hits enemy, set active to false.
     public boolean active;
 
     public Bullet(Level level, Vector2 position, Direction direction) {
@@ -53,6 +51,7 @@ public class Bullet {
         // Hit enemies
         for (Enemy enemy : level.getEnemies()) {
             if (position.dst(enemy.position) < Constants.ENEMY_HIT_DETECTION_RADIUS) {
+                level.spawnExplosion(position);
                 active = false;
                 enemy.health -= 1;
             }

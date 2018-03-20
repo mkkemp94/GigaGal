@@ -7,6 +7,7 @@ import com.badlogic.gdx.utils.DelayedRemovalArray;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.udacity.gamedev.gigagal.entities.Bullet;
 import com.udacity.gamedev.gigagal.entities.Enemy;
+import com.udacity.gamedev.gigagal.entities.Explosion;
 import com.udacity.gamedev.gigagal.entities.GigaGal;
 import com.udacity.gamedev.gigagal.entities.Platform;
 import com.udacity.gamedev.gigagal.utilities.Assets;
@@ -29,6 +30,7 @@ public class Level {
     private Array<Platform> platforms;
     private DelayedRemovalArray<Enemy> enemies;
     private DelayedRemovalArray<Bullet> bullets;
+    private DelayedRemovalArray<Explosion> explosions;
 
     public Level(Viewport viewport) {
         this.viewport = viewport;
@@ -57,10 +59,20 @@ public class Level {
             enemy.update(delta);
 
             if (enemy.health < 1) {
+                spawnExplosion(enemy.position);
                 enemies.removeIndex(i);
             }
         }
         enemies.end();
+
+        // Update explosions
+        explosions.begin();
+        for (int i = 0; i < explosions.size; i++) {
+            if (explosions.get(i).isFinished()) {
+                explosions.removeIndex(i);
+            }
+        }
+        explosions.end();
     }
 
     public void render(SpriteBatch spriteBatch) {
@@ -85,26 +97,9 @@ public class Level {
                 Constants.POWERUP_CENTER
         );
 
-        Utils.drawTextureRegion(
-                spriteBatch,
-                Assets.instance.explosionAssets.animation.getKeyFrame(0),
-                new Vector2(0, 50),
-                Constants.EXPLOSION_CENTER
-        );
-
-        Utils.drawTextureRegion(
-                spriteBatch,
-                Assets.instance.explosionAssets.animation.getKeyFrame(Constants.EXPLOSION_DURATION * 0.5f),
-                new Vector2(50, 50),
-                Constants.EXPLOSION_CENTER
-        );
-
-        Utils.drawTextureRegion(
-                spriteBatch,
-                Assets.instance.explosionAssets.animation.getKeyFrame(Constants.EXPLOSION_DURATION * 0.75f),
-                new Vector2(100, 50),
-                Constants.EXPLOSION_CENTER
-        );
+        for (Explosion explosion : explosions) {
+            explosion.render(spriteBatch);
+        }
     }
 
     private void initializeDebugLevel() {
@@ -113,6 +108,7 @@ public class Level {
         platforms = new Array<Platform>();
         enemies = new DelayedRemovalArray<Enemy>();
         bullets = new DelayedRemovalArray<Bullet>();
+        explosions = new DelayedRemovalArray<Explosion>();
 
         platforms.add(new Platform(15, 100, 30, 20));
 
@@ -150,5 +146,9 @@ public class Level {
 
     public void spawnBullet(Vector2 position, Direction direction) {
         bullets.add(new Bullet(this, position, direction));
+    }
+
+    public void spawnExplosion(Vector2 position) {
+        explosions.add(new Explosion(position));
     }
 }
