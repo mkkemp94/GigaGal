@@ -10,10 +10,8 @@ import com.udacity.gamedev.gigagal.entities.Enemy;
 import com.udacity.gamedev.gigagal.entities.Explosion;
 import com.udacity.gamedev.gigagal.entities.GigaGal;
 import com.udacity.gamedev.gigagal.entities.Platform;
-import com.udacity.gamedev.gigagal.utilities.Assets;
-import com.udacity.gamedev.gigagal.utilities.Constants;
+import com.udacity.gamedev.gigagal.entities.Powerup;
 import com.udacity.gamedev.gigagal.utilities.Enums.Direction;
-import com.udacity.gamedev.gigagal.utilities.Utils;
 
 /**
  * Created by mkemp on 3/6/18.
@@ -31,6 +29,7 @@ public class Level {
     private DelayedRemovalArray<Enemy> enemies;
     private DelayedRemovalArray<Bullet> bullets;
     private DelayedRemovalArray<Explosion> explosions;
+    private DelayedRemovalArray<Powerup> powerups;
 
     public Level(Viewport viewport) {
         this.viewport = viewport;
@@ -75,30 +74,27 @@ public class Level {
         explosions.end();
     }
 
-    public void render(SpriteBatch spriteBatch) {
+    public void render(SpriteBatch batch) {
         for (Platform platform : platforms) {
-            platform.render(spriteBatch);
+            platform.render(batch);
         }
 
         for (Enemy enemy : enemies) {
-            enemy.render(spriteBatch);
+            enemy.render(batch);
         }
 
-        gigaGal.render(spriteBatch);
+        for (Powerup powerup : powerups) {
+            powerup.render(batch);
+        }
+
+        gigaGal.render(batch);
 
         for (Bullet bullet : bullets) {
-            bullet.render(spriteBatch);
+            bullet.render(batch);
         }
 
-        Utils.drawTextureRegion(
-                spriteBatch,
-                Assets.instance.powerupAssets.powerup,
-                new Vector2(50, 0),
-                Constants.POWERUP_CENTER
-        );
-
         for (Explosion explosion : explosions) {
-            explosion.render(spriteBatch);
+            explosion.render(batch);
         }
     }
 
@@ -109,6 +105,7 @@ public class Level {
         enemies = new DelayedRemovalArray<Enemy>();
         bullets = new DelayedRemovalArray<Bullet>();
         explosions = new DelayedRemovalArray<Explosion>();
+        powerups = new DelayedRemovalArray<Powerup>();
 
         platforms.add(new Platform(15, 100, 30, 20));
 
@@ -118,10 +115,16 @@ public class Level {
         enemies.add(new Enemy(enemyPlatform));
         platforms.add(new Platform(35, 55, 50, 20));
         platforms.add(new Platform(10, 20, 20, 9));
+
+        powerups.add(new Powerup(new Vector2(20, 110)));
     }
 
     public Array<Platform> getPlatforms() {
         return platforms;
+    }
+
+    public DelayedRemovalArray<Powerup> getPowerups() {
+        return powerups;
     }
 
     public DelayedRemovalArray<Enemy> getEnemies() {

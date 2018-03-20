@@ -8,6 +8,7 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.DelayedRemovalArray;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.udacity.gamedev.gigagal.Level;
 import com.udacity.gamedev.gigagal.utilities.Assets;
@@ -28,21 +29,23 @@ public class GigaGal {
 
     public static final String TAG = GigaGal.class.getName();
 
-    Vector2 position;
+    private Vector2 position;
 
-    Vector2 spawnLocation;
+    private Vector2 spawnLocation;
 
-    Vector2 velocity;
-    Vector2 lastFramePosition;
+    private Vector2 velocity;
+    private Vector2 lastFramePosition;
 
-    Direction direction;
-    JumpState jumpState;
-    WalkState walkState;
+    private Direction direction;
+    private JumpState jumpState;
+    private WalkState walkState;
 
-    long jumpStartTime;
-    long walkStartTime;
+    private long jumpStartTime;
+    private long walkStartTime;
 
-    Level level;
+    private Level level;
+
+    private int ammo;
 
     public GigaGal(Vector2 spawnLocation, Level level) {
         this.spawnLocation = spawnLocation;
@@ -61,6 +64,8 @@ public class GigaGal {
         direction = Direction.RIGHT;
         jumpState = JumpState.FALLING;
         walkState = WalkState.NOT_WALKING;
+
+        ammo = Constants.GIGAGAL_INITIAL_AMMO;
     }
 
     public Vector2 getPosition() {
@@ -93,13 +98,15 @@ public class GigaGal {
             }
         }
 
-        // Collide with enemies
+        // Bounds
         Rectangle gigaGalBounds = new Rectangle(
                 position.x - Constants.GIGAGAL_STANCE_WIDTH / 2,
                 position.y - Constants.GIGAGAL_EYE_HEIGHT,
                 Constants.GIGAGAL_STANCE_WIDTH,
                 Constants.GIGAGAL_HEIGHT
         );
+
+        // Collide with enemies
         for (Enemy enemy : level.getEnemies()) {
             Rectangle enemyBounds = new Rectangle(
                     enemy.position.x - Constants.ENEMY_COLLISION_RADIUS,
@@ -115,6 +122,24 @@ public class GigaGal {
                 }
             }
         }
+
+        // Collide with powerups
+        DelayedRemovalArray<Powerup> powerups = level.getPowerups();
+        powerups.begin();
+        for (int i = 0; i < powerups.size; i++) {
+            Powerup powerup = powerups.get(i);
+            Rectangle powerupBounds = new Rectangle(
+                    powerup.position.x - Constants.POWERUP_CENTER.x,
+                    powerup.position.y - Constants.POWERUP_CENTER.y,
+                    Assets.instance.powerupAssets.powerup.getRegionWidth(),
+                    Assets.instance.powerupAssets.powerup.getRegionHeight()
+            );
+            if (gigaGalBounds.overlaps(powerupBounds)) {
+                ammo += Constants.POWERUP_AMMO_COUNT;
+                powerups.removeIndex(i);
+            }
+        }
+        powerups.end();
 
         if (jumpState != JumpState.RECOILING) {
             if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
@@ -141,7 +166,8 @@ public class GigaGal {
             endJump();
         }
 
-        if (Gdx.input.isKeyJustPressed(Input.Keys.X)) {
+        if (Gdx.input.isKeyJustPressed(Input.Keys.X) && ammo > 0) {
+            ammo--;
             fireCannon();
         }
     }
