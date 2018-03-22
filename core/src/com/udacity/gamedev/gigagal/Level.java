@@ -11,6 +11,7 @@ import com.udacity.gamedev.gigagal.entities.Explosion;
 import com.udacity.gamedev.gigagal.entities.GigaGal;
 import com.udacity.gamedev.gigagal.entities.Platform;
 import com.udacity.gamedev.gigagal.entities.Powerup;
+import com.udacity.gamedev.gigagal.utilities.Constants;
 import com.udacity.gamedev.gigagal.utilities.Enums.Direction;
 
 /**
@@ -23,7 +24,6 @@ public class Level {
     public static final String TAG = Level.class.getName();
 
     private Viewport viewport;
-
     private GigaGal gigaGal;
     private Array<Platform> platforms;
     private DelayedRemovalArray<Enemy> enemies;
@@ -33,7 +33,12 @@ public class Level {
 
     public Level(Viewport viewport) {
         this.viewport = viewport;
-        initializeDebugLevel();
+        gigaGal = new GigaGal(Constants.DEFAULT_SPAWN_LOCATION, this);
+        platforms = new Array<Platform>();
+        enemies = new DelayedRemovalArray<Enemy>();
+        bullets = new DelayedRemovalArray<Bullet>();
+        explosions = new DelayedRemovalArray<Explosion>();
+        powerups = new DelayedRemovalArray<Powerup>();
     }
 
     public void update(float delta) {
@@ -98,7 +103,7 @@ public class Level {
         }
     }
 
-    private void initializeDebugLevel() {
+    public void initializeDebugLevel() {
 
         gigaGal = new GigaGal(new Vector2(15, 40), this);
         platforms = new Array<Platform>();

@@ -105,7 +105,11 @@ project(":core") {
 
     dependencies {
         compile "com.badlogicgames.gdx:gdx:$gdxVersion"
-        
+
+        // Add a dependency to JSON simple library, with shenanigans to avoid version conflict
+        compile ('com.googlecode.json-simple:json-simple:1.1.1') {
+            exclude module: 'junit'
+        }
     }
 
     // Definition of the packTextures task
@@ -120,8 +124,16 @@ project(":core") {
         }
     }
 
+    // Copy levels from Overlap2D project into assets directory
+    task copyLevels(type: Copy) {
+        from "../GigaGalLevels/scenes"
+        into "../android/assets/levels"
+        exclude "MainScene.dt"
+    }
+
     // Declare a dependency between compileJava and packTextures
     project.tasks.compileJava.dependsOn packTextures
+    project.tasks.compileJava.dependsOn copyLevels
 }
 
 tasks.eclipse.doLast {

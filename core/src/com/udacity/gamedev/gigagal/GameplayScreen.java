@@ -10,6 +10,7 @@ import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.udacity.gamedev.gigagal.utilities.Assets;
 import com.udacity.gamedev.gigagal.utilities.ChaseCam;
 import com.udacity.gamedev.gigagal.utilities.Constants;
+import com.udacity.gamedev.gigagal.utilities.LevelLoader;
 
 /**
  * Created by mkemp on 3/6/18.
@@ -34,8 +35,10 @@ public class GameplayScreen extends ScreenAdapter {
         spriteBatch = new SpriteBatch();
         gameplayViewport = new ExtendViewport(Constants.WORLD_SIZE, Constants.WORLD_SIZE);
 
-        level = new Level(gameplayViewport);
+//        level = new Level(gameplayViewport);
+//        level.initializeDebugLevel();
 
+        level = LevelLoader.load("Level1", gameplayViewport);
         chaseCam = new ChaseCam(gameplayViewport.getCamera(), level.getGigaGal());
     }
 
