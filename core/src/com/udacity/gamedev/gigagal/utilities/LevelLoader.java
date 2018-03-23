@@ -2,14 +2,18 @@ package com.udacity.gamedev.gigagal.utilities;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.udacity.gamedev.gigagal.Level;
+import com.udacity.gamedev.gigagal.entities.Enemy;
+import com.udacity.gamedev.gigagal.entities.Platform;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
 import java.io.File;
+import java.util.Comparator;
 
 /**
  * Created by mkemp on 3/22/18.
@@ -21,55 +25,75 @@ public class LevelLoader {
 
     public static Level load(String levelName, Viewport viewport) {
 
-        Gdx.app.log(TAG, "Loading level...");
-
+        String path = Constants.LEVEL_DIR + File.separator + levelName + "." + Constants.LEVEL_FILE_EXTENSION;
         Level level = new Level(viewport);
 
-        // TODO: Construct the path to the level file
-        // Use the LEVEL_DIR constant, File.separator, the level name, and LEVEL_FILE_EXTENSION
-        String path = Constants.LEVEL_DIR + File.separator + levelName + "." + Constants.LEVEL_FILE_EXTENSION;
+        FileHandle fileHandle = Gdx.files.internal(path);
+        JSONParser parser = new JSONParser();
 
         try {
 
-            // TODO: Get the level FileHandle object using Gdx.files.internal
-            FileHandle fileHandle = Gdx.files.internal(path);
+            JSONObject rootJsonObject = (JSONObject) parser.parse(fileHandle.reader());
 
-            // TODO: Create a new JSONParser
-            JSONParser jsonParser = new JSONParser();
+            JSONObject composite = (JSONObject) rootJsonObject.get(Constants.LEVEL_COMPOSITE);
 
-            // TODO: get the root JSONObject by parsing the level file
-            // Use file.reader() to pass a file reader into parse() on the parser, then cast the result to a JSONObject
-            JSONObject rootJsonObject = (JSONObject) jsonParser.parse(fileHandle.reader());
+            JSONArray platforms = (JSONArray) composite.get(Constants.LEVEL_9PATCHES);
 
-            // TODO: Log rootJsonObject.keySet().toString() to see the keys available in this JSONObject
-            Gdx.app.log(TAG, "All Keys: " + rootJsonObject.keySet().toString());
-
-            // TODO: Get the 'composite' object within the rootJsonObject
-            JSONObject compositeObject = (JSONObject) rootJsonObject.get(Constants.LEVEL_COMPOSITE);
-
-            // TODO: Log the keys available in the composite object
-            Gdx.app.log(TAG, "Keys in composite object: " + compositeObject.keySet().toString());
-
-            // TODO: Get the JSONArray behind the LEVEL_9PATCHES key
-            JSONArray ninePatches = (JSONArray) compositeObject.get(Constants.LEVEL_9PATCHES);
-
-            // TODO: Get the first platform in the array
-            JSONObject firstPlatform = (JSONObject) ninePatches.get(0);
-
-            // TODO: Log the keys available in the platform object
-            Gdx.app.log(TAG, "Keys in platform object: " + firstPlatform.keySet().toString());
-
+            loadPlatforms(platforms, level);
 
         } catch (Exception ex) {
-
-            // TODO: If there's an error, log the message using ex.getMessage()
-            // Be sure to log the error at the appropriate log level
             Gdx.app.error(TAG, ex.getMessage());
-
-            // TODO: Then log the error message defined in LEVEL_ERROR_MESSAGE
             Gdx.app.error(TAG, Constants.LEVEL_ERROR_MESSAGE);
         }
 
         return level;
+    }
+
+    private static float safeGetFloat(JSONObject object, String key) {
+        Number number = (Number) object.get(key);
+        return (number == null) ? 0 : number.floatValue();
+    }
+
+    private static void loadPlatforms(JSONArray array, Level level) {
+
+        Array<Platform> platformArray = new Array<Platform>();
+
+        for (Object object : array) {
+            final JSONObject platformObject = (JSONObject) object;
+
+            final float x = safeGetFloat(platformObject, Constants.LEVEL_X_KEY);
+            final float y = safeGetFloat(platformObject, Constants.LEVEL_Y_KEY);
+
+            final float width = ((Number) platformObject.get(Constants.LEVEL_WIDTH_KEY)).floatValue();
+            final float height = ((Number) platformObject.get(Constants.LEVEL_HEIGHT_KEY)).floatValue();
+
+            Gdx.app.log(TAG, "Location: " + x + ", " + y);
+            Gdx.app.log(TAG, "Dimensions: " + width + " x " + height);
+
+            Platform platform = new Platform(x, y + height, width, height);
+            platformArray.add(platform);
+
+            final String identifier = (String) platformObject.get(Constants.LEVEL_IDENTIFIER_KEY);
+
+            if (identifier != null && identifier.equals(Constants.LEVEL_ENEMY_TAG)) {
+                Gdx.app.log(TAG, "Loaded an enemy on that platform");
+                final Enemy enemy = new Enemy(platform);
+                level.getEnemies().add(enemy);
+            }
+        }
+
+        platformArray.sort(new Comparator<Platform>() {
+            @Override
+            public int compare(Platform o1, Platform o2) {
+                if (o1.top < o2.top) {
+                    return 1;
+                } else if (o1.top > o2.top) {
+                    return -1;
+                }
+                return 0;
+            }
+        });
+
+        level.getPlatforms().addAll(platformArray);
     }
 }
