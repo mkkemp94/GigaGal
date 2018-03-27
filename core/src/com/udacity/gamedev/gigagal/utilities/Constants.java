@@ -84,10 +84,10 @@ public class Constants {
     public static final String EXIT_PORTAL_4 = "exit-portal-4";
     public static final String EXIT_PORTAL_5 = "exit-portal-5";
     public static final String EXIT_PORTAL_6 = "exit-portal-6";
-    public static final Vector2 EXIT_PORTAL_CENTER = new Vector2(32, 32);
+    public static final Vector2 EXIT_PORTAL_CENTER = new Vector2(31, 31);
+    public static final float EXIT_PORTAL_RADIUS = 28;
     public static final float EXIT_PORTAL_DURATION = 0.1f;
     public static final Vector2 EXIT_PORTAL_DEFAULT_LOCATION = new Vector2(200, 200);
-
 
     // Level Loading
     public static final String LEVEL_DIR = "levels";
@@ -103,4 +103,7 @@ public class Constants {
     public static final String LEVEL_HEIGHT_KEY = "height";
     public static final String LEVEL_IDENTIFIER_KEY = "itemIdentifier";
     public static final String LEVEL_ENEMY_TAG = "Enemy";
+    public static final String[] LEVELS = {"levels/Level1.dt", "levels/Level2.dt"};
+
+    public static final float HUD_VIEWPORT_SIZE = 480;
 }

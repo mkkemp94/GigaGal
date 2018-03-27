@@ -6,11 +6,10 @@ import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.utils.viewport.ExtendViewport;
+import com.udacity.gamedev.gigagal.overlays.GigaGalHud;
 import com.udacity.gamedev.gigagal.utilities.Assets;
 import com.udacity.gamedev.gigagal.utilities.ChaseCam;
 import com.udacity.gamedev.gigagal.utilities.Constants;
-import com.udacity.gamedev.gigagal.utilities.LevelLoader;
 
 /**
  * Created by mkemp on 3/6/18.
@@ -23,34 +22,33 @@ public class GameplayScreen extends ScreenAdapter {
     public static final String TAG = GameplayScreen.class.getName();
 
     private Level level;
-    private SpriteBatch spriteBatch;
-    private ExtendViewport gameplayViewport;
+    private SpriteBatch batch;
     private ChaseCam chaseCam;
+    private GigaGalHud hud;
 
     @Override
     public void show() {
         AssetManager am = new AssetManager();
         Assets.instance.init(am);
 
-        spriteBatch = new SpriteBatch();
-        gameplayViewport = new ExtendViewport(Constants.WORLD_SIZE, Constants.WORLD_SIZE);
+        batch = new SpriteBatch();
+        chaseCam = new ChaseCam();
+        hud = new GigaGalHud();
 
-//        level = new Level(gameplayViewport);
-//        level.initializeDebugLevel();
-
-        level = LevelLoader.load("Level1", gameplayViewport);
-        chaseCam = new ChaseCam(gameplayViewport.getCamera(), level.getGigaGal());
+        startNewLevel();
     }
 
     @Override
     public void resize(int width, int height) {
-        gameplayViewport.update(width, height, true);
+        hud.viewport.update(width, height, true);
+        level.viewport.update(width, height, true);
+        chaseCam.camera = level.viewport.getCamera();
     }
 
     @Override
     public void dispose() {
         Assets.instance.dispose();
-        spriteBatch.dispose();
+        batch.dispose();
     }
 
     @Override
@@ -58,15 +56,23 @@ public class GameplayScreen extends ScreenAdapter {
         level.update(delta);
         chaseCam.update(delta);
 
-        gameplayViewport.apply();
-
         Color bgColor = Constants.BACKGROUND_COLOR;
         Gdx.gl.glClearColor(bgColor.r, bgColor.g, bgColor.b, 1);
         Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-        spriteBatch.setProjectionMatrix(gameplayViewport.getCamera().combined);
-        spriteBatch.begin();
-        level.render(spriteBatch);
-        spriteBatch.end();
+        level.render(batch);
+        hud.render(batch);
+    }
+
+    private void startNewLevel() {
+
+        level = Level.debugLevel();
+
+//        String levelName = Constants.LEVELS[MathUtils.random(Constants.LEVELS.length - 1)];
+//        level = LevelLoader.load(levelName);
+
+        chaseCam.camera = level.viewport.getCamera();
+        chaseCam.target = level.getGigaGal();
+        resize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
     }
 }

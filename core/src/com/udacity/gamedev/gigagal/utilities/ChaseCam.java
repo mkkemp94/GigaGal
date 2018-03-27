@@ -13,13 +13,11 @@ public class ChaseCam {
 
     public static final String TAG = ChaseCam.class.getName();
 
-    private Camera camera;
-    private GigaGal target;
+    public Camera camera;
+    public GigaGal target;
     private Boolean following;
 
-    public ChaseCam(Camera camera, GigaGal target) {
-        this.camera = camera;
-        this.target = target;
+    public ChaseCam() {
         following = true;
     }
 

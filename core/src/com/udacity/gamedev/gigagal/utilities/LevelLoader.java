@@ -4,7 +4,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.viewport.Viewport;
 import com.udacity.gamedev.gigagal.Level;
 import com.udacity.gamedev.gigagal.entities.Enemy;
 import com.udacity.gamedev.gigagal.entities.ExitPortal;
@@ -27,10 +26,10 @@ public class LevelLoader {
 
     public static final String TAG = LevelLoader.class.toString();
 
-    public static Level load(String levelName, Viewport viewport) {
+    public static Level load(String levelName) {
 
         String path = Constants.LEVEL_DIR + File.separator + levelName + "." + Constants.LEVEL_FILE_EXTENSION;
-        Level level = new Level(viewport);
+        Level level = new Level();
 
         FileHandle fileHandle = Gdx.files.internal(path);
         JSONParser parser = new JSONParser();

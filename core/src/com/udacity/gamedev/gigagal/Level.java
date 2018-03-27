@@ -4,6 +4,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.DelayedRemovalArray;
+import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.udacity.gamedev.gigagal.entities.Bullet;
 import com.udacity.gamedev.gigagal.entities.Enemy;
@@ -24,7 +25,11 @@ public class Level {
 
     public static final String TAG = Level.class.getName();
 
-    private Viewport viewport;
+    public boolean gameOver;
+    public boolean victory;
+    public int score;
+    public Viewport viewport;
+
     private GigaGal gigaGal;
     private ExitPortal exitPortal;
     private Array<Platform> platforms;
@@ -33,17 +38,26 @@ public class Level {
     private DelayedRemovalArray<Explosion> explosions;
     private DelayedRemovalArray<Powerup> powerups;
 
-    public Level(Viewport viewport) {
-        this.viewport = viewport;
-        gigaGal = new GigaGal(Constants.DEFAULT_SPAWN_LOCATION, this);
-        exitPortal = new ExitPortal(Constants.EXIT_PORTAL_DEFAULT_LOCATION);
-        exitPortal = new ExitPortal(Constants.EXIT_PORTAL_DEFAULT_LOCATION);
+    public Level() {
+        viewport = new ExtendViewport(Constants.WORLD_SIZE, Constants.WORLD_SIZE);
+
+        gigaGal = new GigaGal(new Vector2(50, 50), this);
         platforms = new Array<Platform>();
         enemies = new DelayedRemovalArray<Enemy>();
         bullets = new DelayedRemovalArray<Bullet>();
         explosions = new DelayedRemovalArray<Explosion>();
         powerups = new DelayedRemovalArray<Powerup>();
-        initializeDebugLevel();
+        exitPortal = new ExitPortal(new Vector2(200, 200));
+
+        gameOver = false;
+        victory = false;
+        score = 0;
+    }
+
+    public static Level debugLevel() {
+        Level level = new Level();
+        level.initializeDebugLevel();
+        return level;
     }
 
     public void update(float delta) {
@@ -85,20 +99,26 @@ public class Level {
     }
 
     public void render(SpriteBatch batch) {
+        viewport.apply();
+
+        batch.setProjectionMatrix(viewport.getCamera().combined);
+        batch.begin();
+
         for (Platform platform : platforms) {
             platform.render(batch);
+        }
+
+        exitPortal.render(batch);
+
+        for (Powerup powerup : powerups) {
+            powerup.render(batch);
         }
 
         for (Enemy enemy : enemies) {
             enemy.render(batch);
         }
 
-        for (Powerup powerup : powerups) {
-            powerup.render(batch);
-        }
-
         gigaGal.render(batch);
-        exitPortal.render(batch);
 
         for (Bullet bullet : bullets) {
             bullet.render(batch);
@@ -107,24 +127,27 @@ public class Level {
         for (Explosion explosion : explosions) {
             explosion.render(batch);
         }
+
+        batch.end();
     }
 
     public void initializeDebugLevel() {
 
         gigaGal = new GigaGal(new Vector2(15, 40), this);
         exitPortal = new ExitPortal(new Vector2(150, 150));
+
         platforms = new Array<Platform>();
-        enemies = new DelayedRemovalArray<Enemy>();
         bullets = new DelayedRemovalArray<Bullet>();
+        enemies = new DelayedRemovalArray<Enemy>();
         explosions = new DelayedRemovalArray<Explosion>();
         powerups = new DelayedRemovalArray<Powerup>();
 
         platforms.add(new Platform(15, 100, 30, 20));
 
         Platform enemyPlatform = new Platform(75, 90, 100, 65);
-        platforms.add(enemyPlatform);
-
         enemies.add(new Enemy(enemyPlatform));
+
+        platforms.add(enemyPlatform);
         platforms.add(new Platform(35, 55, 50, 20));
         platforms.add(new Platform(10, 20, 20, 9));
 
@@ -135,12 +158,20 @@ public class Level {
         return platforms;
     }
 
+    public DelayedRemovalArray<Enemy> getEnemies() {
+        return enemies;
+    }
+
     public DelayedRemovalArray<Powerup> getPowerups() {
         return powerups;
     }
 
-    public DelayedRemovalArray<Enemy> getEnemies() {
-        return enemies;
+    public ExitPortal getExitPortal() {
+        return exitPortal;
+    }
+
+    public void setExitPortal(ExitPortal exitPortal) {
+        this.exitPortal = exitPortal;
     }
 
     public Viewport getViewport() {
@@ -155,13 +186,10 @@ public class Level {
         return gigaGal;
     }
 
-    public void setExitPortal(ExitPortal exitPortal) {
-        this.exitPortal = exitPortal;
-    }
-
     public void setGigaGal(GigaGal gigaGal) {
         this.gigaGal = gigaGal;
     }
+
     public void spawnBullet(Vector2 position, Direction direction) {
         bullets.add(new Bullet(this, position, direction));
     }
