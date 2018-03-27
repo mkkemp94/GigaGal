@@ -155,10 +155,13 @@ public class Level {
         return gigaGal;
     }
 
+    public void setExitPortal(ExitPortal exitPortal) {
+        this.exitPortal = exitPortal;
+    }
+
     public void setGigaGal(GigaGal gigaGal) {
         this.gigaGal = gigaGal;
     }
-
     public void spawnBullet(Vector2 position, Direction direction) {
         bullets.add(new Bullet(this, position, direction));
     }

@@ -152,7 +152,7 @@ public class Assets implements Disposable, AssetErrorListener {
     public class PowerupAssets {
         public final AtlasRegion powerup;
         public PowerupAssets(TextureAtlas atlas) {
-            powerup = atlas.findRegion(Constants.POWERUP_SPRITE);
+            powerup = atlas.findRegion(Constants.POWERUP);
         }
     }
 

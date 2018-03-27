@@ -2,11 +2,15 @@ package com.udacity.gamedev.gigagal.utilities;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.udacity.gamedev.gigagal.Level;
 import com.udacity.gamedev.gigagal.entities.Enemy;
+import com.udacity.gamedev.gigagal.entities.ExitPortal;
+import com.udacity.gamedev.gigagal.entities.GigaGal;
 import com.udacity.gamedev.gigagal.entities.Platform;
+import com.udacity.gamedev.gigagal.entities.Powerup;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -38,8 +42,10 @@ public class LevelLoader {
             JSONObject composite = (JSONObject) rootJsonObject.get(Constants.LEVEL_COMPOSITE);
 
             JSONArray platforms = (JSONArray) composite.get(Constants.LEVEL_9PATCHES);
-
             loadPlatforms(platforms, level);
+
+            JSONArray otherObjects = (JSONArray) composite.get(Constants.LEVEL_IMAGES);
+            loadNonPlatformEntities(otherObjects, level);
 
         } catch (Exception ex) {
             Gdx.app.error(TAG, ex.getMessage());
@@ -67,8 +73,8 @@ public class LevelLoader {
             final float width = ((Number) platformObject.get(Constants.LEVEL_WIDTH_KEY)).floatValue();
             final float height = ((Number) platformObject.get(Constants.LEVEL_HEIGHT_KEY)).floatValue();
 
-            Gdx.app.log(TAG, "Location: " + x + ", " + y);
-            Gdx.app.log(TAG, "Dimensions: " + width + " x " + height);
+//            Gdx.app.log(TAG, "Location: " + x + ", " + y);
+//            Gdx.app.log(TAG, "Dimensions: " + width + " x " + height);
 
             Platform platform = new Platform(x, y + height, width, height);
             platformArray.add(platform);
@@ -95,5 +101,36 @@ public class LevelLoader {
         });
 
         level.getPlatforms().addAll(platformArray);
+    }
+
+    private static void loadNonPlatformEntities(JSONArray array, Level level) {
+
+        for (Object object : array) {
+            JSONObject jsonObject = (JSONObject) object;
+
+            Vector2 lowerLeftCorner = new Vector2();
+            lowerLeftCorner.x = safeGetFloat(jsonObject, Constants.LEVEL_X_KEY);
+            lowerLeftCorner.y = safeGetFloat(jsonObject, Constants.LEVEL_Y_KEY);
+
+            if (jsonObject.get(Constants.LEVEL_IMAGENAME_KEY).equals(Constants.STANDING_RIGHT)) {
+
+                Vector2 gigaGalPosition = lowerLeftCorner.add(Constants.GIGAGAL_EYE_POSITION);
+                Gdx.app.log(TAG, "Loaded GigaGal at" + gigaGalPosition);
+                level.setGigaGal(new GigaGal(gigaGalPosition, level));
+            }
+
+            else if (jsonObject.get(Constants.LEVEL_IMAGENAME_KEY).equals(Constants.EXIT_PORTAL_1)) {
+
+                Vector2 exitPortalPosition = lowerLeftCorner.add(Constants.EXIT_PORTAL_CENTER);
+                level.setExitPortal(new ExitPortal(exitPortalPosition));
+            }
+
+            else if (jsonObject.get(Constants.LEVEL_IMAGENAME_KEY).equals(Constants.POWERUP)) {
+
+                Vector2 powerupPosition = lowerLeftCorner.add(Constants.POWERUP_CENTER);
+                level.getPowerups().add(new Powerup(powerupPosition));
+            }
+        }
+
     }
 }

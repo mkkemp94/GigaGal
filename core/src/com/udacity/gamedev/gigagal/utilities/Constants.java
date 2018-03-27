@@ -73,7 +73,7 @@ public class Constants {
     public static final float EXPLOSION_DURATION = 0.5f;
 
     // Powerup
-    public static final String POWERUP_SPRITE = "powerup";
+    public static final String POWERUP = "powerup";
     public static final Vector2 POWERUP_CENTER = new Vector2(7, 5);
     public static final int POWERUP_AMMO_COUNT = 10;
 
