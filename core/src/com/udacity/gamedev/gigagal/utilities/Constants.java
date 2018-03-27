@@ -77,6 +77,18 @@ public class Constants {
     public static final Vector2 POWERUP_CENTER = new Vector2(7, 5);
     public static final int POWERUP_AMMO_COUNT = 10;
 
+    // Exit Portal
+    public static final String EXIT_PORTAL_1 = "exit-portal-1";
+    public static final String EXIT_PORTAL_2 = "exit-portal-2";
+    public static final String EXIT_PORTAL_3 = "exit-portal-3";
+    public static final String EXIT_PORTAL_4 = "exit-portal-4";
+    public static final String EXIT_PORTAL_5 = "exit-portal-5";
+    public static final String EXIT_PORTAL_6 = "exit-portal-6";
+    public static final Vector2 EXIT_PORTAL_CENTER = new Vector2(32, 32);
+    public static final float EXIT_PORTAL_DURATION = 0.1f;
+    public static final Vector2 EXIT_PORTAL_DEFAULT_LOCATION = new Vector2(200, 200);
+
+
     // Level Loading
     public static final String LEVEL_DIR = "levels";
     public static final String LEVEL_FILE_EXTENSION = "dt";

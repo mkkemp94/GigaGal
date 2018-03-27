@@ -7,6 +7,7 @@ import com.badlogic.gdx.utils.DelayedRemovalArray;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.udacity.gamedev.gigagal.entities.Bullet;
 import com.udacity.gamedev.gigagal.entities.Enemy;
+import com.udacity.gamedev.gigagal.entities.ExitPortal;
 import com.udacity.gamedev.gigagal.entities.Explosion;
 import com.udacity.gamedev.gigagal.entities.GigaGal;
 import com.udacity.gamedev.gigagal.entities.Platform;
@@ -25,6 +26,7 @@ public class Level {
 
     private Viewport viewport;
     private GigaGal gigaGal;
+    private ExitPortal exitPortal;
     private Array<Platform> platforms;
     private DelayedRemovalArray<Enemy> enemies;
     private DelayedRemovalArray<Bullet> bullets;
@@ -34,11 +36,14 @@ public class Level {
     public Level(Viewport viewport) {
         this.viewport = viewport;
         gigaGal = new GigaGal(Constants.DEFAULT_SPAWN_LOCATION, this);
+        exitPortal = new ExitPortal(Constants.EXIT_PORTAL_DEFAULT_LOCATION);
+        exitPortal = new ExitPortal(Constants.EXIT_PORTAL_DEFAULT_LOCATION);
         platforms = new Array<Platform>();
         enemies = new DelayedRemovalArray<Enemy>();
         bullets = new DelayedRemovalArray<Bullet>();
         explosions = new DelayedRemovalArray<Explosion>();
         powerups = new DelayedRemovalArray<Powerup>();
+        initializeDebugLevel();
     }
 
     public void update(float delta) {
@@ -93,6 +98,7 @@ public class Level {
         }
 
         gigaGal.render(batch);
+        exitPortal.render(batch);
 
         for (Bullet bullet : bullets) {
             bullet.render(batch);
@@ -106,6 +112,7 @@ public class Level {
     public void initializeDebugLevel() {
 
         gigaGal = new GigaGal(new Vector2(15, 40), this);
+        exitPortal = new ExitPortal(new Vector2(150, 150));
         platforms = new Array<Platform>();
         enemies = new DelayedRemovalArray<Enemy>();
         bullets = new DelayedRemovalArray<Bullet>();
