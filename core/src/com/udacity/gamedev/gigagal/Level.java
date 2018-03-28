@@ -66,6 +66,10 @@ public class Level {
             victory = true;
         }
 
+        else if (gigaGal.getLives() <= 0) {
+            gameOver = true;
+        }
+
         if (!gameOver && !victory) {
             // Update Giga Gal
             gigaGal.update(delta, platforms);
