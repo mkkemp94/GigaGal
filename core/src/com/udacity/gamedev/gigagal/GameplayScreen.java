@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.udacity.gamedev.gigagal.overlays.GameOverOverlay;
 import com.udacity.gamedev.gigagal.overlays.GigaGalHud;
+import com.udacity.gamedev.gigagal.overlays.OnscreenControls;
 import com.udacity.gamedev.gigagal.overlays.VictoryOverlay;
 import com.udacity.gamedev.gigagal.utilities.Assets;
 import com.udacity.gamedev.gigagal.utilities.ChaseCam;
@@ -32,6 +33,7 @@ public class GameplayScreen extends ScreenAdapter {
     private GigaGalHud hud;
     private VictoryOverlay victoryOverlay;
     private GameOverOverlay gameOverOverlay;
+    private OnscreenControls onscreenControls;
 
     @Override
     public void show() {
@@ -43,6 +45,7 @@ public class GameplayScreen extends ScreenAdapter {
         hud = new GigaGalHud();
         victoryOverlay = new VictoryOverlay();
         gameOverOverlay = new GameOverOverlay();
+        onscreenControls = new OnscreenControls();
 
         startNewLevel();
     }
@@ -54,6 +57,9 @@ public class GameplayScreen extends ScreenAdapter {
         gameOverOverlay.viewport.update(width, height, true);
         level.viewport.update(width, height, true);
         chaseCam.camera = level.viewport.getCamera();
+
+        onscreenControls.viewport.update(width, height, true);
+        onscreenControls.recalculateButtonPositions();
     }
 
     @Override
@@ -72,6 +78,9 @@ public class GameplayScreen extends ScreenAdapter {
         Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         level.render(batch);
+
+        onscreenControls.render(batch);
+
         hud.render(batch, level.getGigaGal().getLives(), level.getGigaGal().getAmmo(), level.score);
         renderLevelEndOverlays(batch);
     }
@@ -102,7 +111,7 @@ public class GameplayScreen extends ScreenAdapter {
 
             if (Utils.secondsSince(levelEndOverlayStartTime) > Constants.LEVEL_END_DURATION) {
                 levelEndOverlayStartTime = 0;
-                levelComplete();
+                levelFailed();
             }
         }
     }
@@ -120,6 +129,10 @@ public class GameplayScreen extends ScreenAdapter {
     }
 
     public void levelComplete() {
+        startNewLevel();
+    }
+
+    public void levelFailed() {
         startNewLevel();
     }
 }
