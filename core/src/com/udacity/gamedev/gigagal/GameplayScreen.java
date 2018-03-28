@@ -1,11 +1,13 @@
 package com.udacity.gamedev.gigagal;
 
+import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.udacity.gamedev.gigagal.overlays.GameOverOverlay;
 import com.udacity.gamedev.gigagal.overlays.GigaGalHud;
@@ -14,6 +16,7 @@ import com.udacity.gamedev.gigagal.overlays.VictoryOverlay;
 import com.udacity.gamedev.gigagal.utilities.Assets;
 import com.udacity.gamedev.gigagal.utilities.ChaseCam;
 import com.udacity.gamedev.gigagal.utilities.Constants;
+import com.udacity.gamedev.gigagal.utilities.LevelLoader;
 import com.udacity.gamedev.gigagal.utilities.Utils;
 
 /**
@@ -47,7 +50,16 @@ public class GameplayScreen extends ScreenAdapter {
         gameOverOverlay = new GameOverOverlay();
         onscreenControls = new OnscreenControls();
 
+        if (onMobile()) {
+            Gdx.input.setInputProcessor(onscreenControls);
+        }
+
         startNewLevel();
+    }
+
+    private boolean onMobile() {
+        return Gdx.app.getType() == Application.ApplicationType.Android ||
+                Gdx.app.getType() == Application.ApplicationType.iOS;
     }
 
     @Override
@@ -79,7 +91,9 @@ public class GameplayScreen extends ScreenAdapter {
 
         level.render(batch);
 
-        onscreenControls.render(batch);
+        if (onMobile()) {
+            onscreenControls.render(batch);
+        }
 
         hud.render(batch, level.getGigaGal().getLives(), level.getGigaGal().getAmmo(), level.score);
         renderLevelEndOverlays(batch);
@@ -118,13 +132,14 @@ public class GameplayScreen extends ScreenAdapter {
 
     private void startNewLevel() {
 
-        level = Level.debugLevel();
+//        level = Level.debugLevel();
 
-//        String levelName = Constants.LEVELS[MathUtils.random(Constants.LEVELS.length - 1)];
-//        level = LevelLoader.load(levelName);
+        String levelName = Constants.LEVELS[MathUtils.random(Constants.LEVELS.length - 1)];
+        level = LevelLoader.load(levelName);
 
         chaseCam.camera = level.viewport.getCamera();
         chaseCam.target = level.getGigaGal();
+        onscreenControls.gigaGal = level.getGigaGal();
         resize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
     }
 

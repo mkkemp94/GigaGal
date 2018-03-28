@@ -15,7 +15,6 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
-import java.io.File;
 import java.util.Comparator;
 
 /**
@@ -26,12 +25,11 @@ public class LevelLoader {
 
     public static final String TAG = LevelLoader.class.toString();
 
-    public static Level load(String levelName) {
-
-        String path = Constants.LEVEL_DIR + File.separator + levelName + "." + Constants.LEVEL_FILE_EXTENSION;
+    public static Level load(String path) {
         Level level = new Level();
 
         FileHandle fileHandle = Gdx.files.internal(path);
+
         JSONParser parser = new JSONParser();
 
         try {

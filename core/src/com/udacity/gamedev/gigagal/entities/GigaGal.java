@@ -205,7 +205,7 @@ public class GigaGal {
         }
     }
 
-    private void shoot() {
+    public void shoot() {
         if (ammo > 0) {
 
             ammo--;
