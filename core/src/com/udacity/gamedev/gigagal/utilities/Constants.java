@@ -105,5 +105,15 @@ public class Constants {
     public static final String LEVEL_ENEMY_TAG = "Enemy";
     public static final String[] LEVELS = {"levels/Level1.dt", "levels/Level2.dt"};
 
+    // HUD
     public static final float HUD_VIEWPORT_SIZE = 480;
+    public static final float HUD_MARGIN = 20;
+    public static final String HUD_AMMO_LABEL = "Ammo: ";
+    public static final String HUD_SCORE_LABEL = "Score: ";
+
+    // Scoring
+    public static final int ENEMY_KILL_SCORE = 100;
+    public static final int ENEMY_HIT_SCORE = 25;
+    public static final int POWERUP_SCORE = 50;
+
 }

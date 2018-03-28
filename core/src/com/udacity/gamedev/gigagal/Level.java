@@ -84,6 +84,7 @@ public class Level {
             if (enemy.health < 1) {
                 spawnExplosion(enemy.position);
                 enemies.removeIndex(i);
+                score += Constants.ENEMY_KILL_SCORE;
             }
         }
         enemies.end();
