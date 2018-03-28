@@ -13,7 +13,7 @@ public class Constants {
     // World/Camera
     public static final Color BACKGROUND_COLOR = Color.SKY;
     public static final float WORLD_SIZE = 160;
-    public static final float KILL_PLANE = -100;
+    public static final float KILL_PLANE = -200;
     public static final float GRAVITY = 10;
     public static final float CHASE_CAM_MOVE_SPEED = WORLD_SIZE;
     public static final String TEXTURE_ATLAS = "images/gigagal.pack.atlas";
@@ -21,7 +21,7 @@ public class Constants {
     // Giga Gal
     public static final Vector2 GIGAGAL_EYE_POSITION = new Vector2(16, 24);
     public static final float GIGAGAL_EYE_HEIGHT = 16f;
-    public static final float GIGAGAL_STANCE_WIDTH = 21f;
+    public static final float GIGAGAL_STANCE_WIDTH = 19f;
     public static final Vector2 GIGAGAL_CANNON_OFFSET = new Vector2(12, -7);
     public static final float GIGAGAL_HEIGHT = 23f;
     public static final float GIGAGAL_MOVEMENT_SPEED = 100;
@@ -32,7 +32,6 @@ public class Constants {
 
     public static final int GIGAGAL_INITIAL_AMMO = 10;
     public static final int GIGAGAL_INITIAL_LIVES = 3;
-    public static final Vector2 DEFAULT_SPAWN_LOCATION = new Vector2(100, 100);
 
     public static final String STANDING_RIGHT   = "standing-right";
     public static final String STANDING_LEFT    = "standing-left";
@@ -47,7 +46,7 @@ public class Constants {
     public static final float WALK_LOOP_FRAME_DURATION = 0.25f;
 
     // Platform
-    public static final String PLATFORM         = "platform";
+    public static final String PLATFORM = "platform";
     public static final int PLATFORM_EDGE = 8;
 
     // Enemy
@@ -55,7 +54,7 @@ public class Constants {
     public static final Vector2 ENEMY_CENTER = new Vector2(14, 22);
     public static final float ENEMY_MOVEMENT_SPEED = 30;
     public static final float ENEMY_BOB_AMPLITUDE = 2;
-    public static final float ENEMY_BOB_PERIOD = 3;
+    public static final float ENEMY_BOB_PERIOD = 3.0f;
     public static final float ENEMY_COLLISION_RADIUS = 15;
     public static final float ENEMY_HEALTH = 5;
     public static final float ENEMY_HIT_DETECTION_RADIUS = 17;
@@ -110,6 +109,14 @@ public class Constants {
     public static final float HUD_MARGIN = 20;
     public static final String HUD_AMMO_LABEL = "Ammo: ";
     public static final String HUD_SCORE_LABEL = "Score: ";
+
+    // Victory/Game Over screens
+    public static final float LEVEL_END_DURATION = 5;
+    public static final String VICTORY_MESSAGE = "You are the Winrar!";
+    public static final String GAME_OVER_MESSAGE = "Game Over, Gal";
+    public static final int EXPLOSION_COUNT = 500;
+    public static final int ENEMY_COUNT = 200;
+    public static final String FONT_FILE = "font/header.fnt";
 
     // Scoring
     public static final int ENEMY_KILL_SCORE = 100;

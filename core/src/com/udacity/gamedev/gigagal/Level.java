@@ -62,41 +62,47 @@ public class Level {
 
     public void update(float delta) {
 
-        // Update Giga Gal
-        gigaGal.update(delta, platforms);
-
-        // Update bullets
-        bullets.begin();
-        for (Bullet bullet : bullets) {
-            bullet.update(delta);
-            if (!bullet.active) {
-                bullets.removeValue(bullet, false);
-            }
+        if (gigaGal.getPosition().dst(exitPortal.position) < Constants.EXIT_PORTAL_RADIUS) {
+            victory = true;
         }
-        bullets.end();
 
-        // Update enemies
-        enemies.begin();
-        for (int i = 0; i < enemies.size; i++) {
-            Enemy enemy = enemies.get(i);
-            enemy.update(delta);
+        if (!gameOver && !victory) {
+            // Update Giga Gal
+            gigaGal.update(delta, platforms);
 
-            if (enemy.health < 1) {
-                spawnExplosion(enemy.position);
-                enemies.removeIndex(i);
-                score += Constants.ENEMY_KILL_SCORE;
+            // Update bullets
+            bullets.begin();
+            for (Bullet bullet : bullets) {
+                bullet.update(delta);
+                if (!bullet.active) {
+                    bullets.removeValue(bullet, false);
+                }
             }
-        }
-        enemies.end();
+            bullets.end();
 
-        // Update explosions
-        explosions.begin();
-        for (int i = 0; i < explosions.size; i++) {
-            if (explosions.get(i).isFinished()) {
-                explosions.removeIndex(i);
+            // Update enemies
+            enemies.begin();
+            for (int i = 0; i < enemies.size; i++) {
+                Enemy enemy = enemies.get(i);
+                enemy.update(delta);
+
+                if (enemy.health < 1) {
+                    spawnExplosion(enemy.position);
+                    enemies.removeIndex(i);
+                    score += Constants.ENEMY_KILL_SCORE;
+                }
             }
+            enemies.end();
+
+            // Update explosions
+            explosions.begin();
+            for (int i = 0; i < explosions.size; i++) {
+                if (explosions.get(i).isFinished()) {
+                    explosions.removeIndex(i);
+                }
+            }
+            explosions.end();
         }
-        explosions.end();
     }
 
     public void render(SpriteBatch batch) {

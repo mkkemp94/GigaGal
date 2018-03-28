@@ -1,6 +1,5 @@
 package com.udacity.gamedev.gigagal.entities;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.TimeUtils;
@@ -14,8 +13,11 @@ import com.udacity.gamedev.gigagal.utilities.Utils;
 
 public class Explosion {
 
-    private Vector2 position;
+    public Vector2 position;
     private long startTime;
+
+    // Offset for time until this renders
+    public float offset = 0;
 
     public Explosion(Vector2 position) {
         this.position = position;
@@ -24,19 +26,24 @@ public class Explosion {
     }
 
     public void render(SpriteBatch spriteBatch) {
-        Gdx.app.log("Positionx", ""+position.x);
-        Gdx.app.log("Positiony", ""+position.y);
-        Utils.drawTextureRegion(
-                spriteBatch,
-                Assets.instance.explosionAssets.explosion.getKeyFrame(Utils.secondsSince(startTime)),
-                position,
-                Constants.EXPLOSION_CENTER
-        );
+        if (!isFinished() && !yetToStart()) {
+            Utils.drawTextureRegion(
+                    spriteBatch,
+                    Assets.instance.explosionAssets.explosion.
+                            getKeyFrame(Utils.secondsSince(startTime) - offset),
+                    position,
+                    Constants.EXPLOSION_CENTER
+            );
+        }
+    }
+
+    public boolean yetToStart() {
+        return Utils.secondsSince(startTime) - offset < 0;
     }
 
     public boolean isFinished() {
         return Assets.instance.explosionAssets.explosion.isAnimationFinished(
-                Utils.secondsSince(startTime)
+                Utils.secondsSince(startTime) - offset
         );
     }
 }

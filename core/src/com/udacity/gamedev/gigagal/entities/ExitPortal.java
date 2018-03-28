@@ -14,7 +14,7 @@ import com.udacity.gamedev.gigagal.utilities.Utils;
 
 public class ExitPortal {
 
-    private Vector2 position;
+    public Vector2 position;
     private long startTime;
 
     public ExitPortal(Vector2 position) {
